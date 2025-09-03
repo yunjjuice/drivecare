@@ -19,26 +19,30 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    asciidoctorExtensions
 }
 
 repositories {
     mavenCentral()
 }
 
-ext {
-    set('snippetsDir', file("build/generated-snippets"))
-}
-
 dependencies {
+    annotationProcessor 'org.projectlombok:lombok'
+    asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    runtimeOnly 'com.h2database:h2'
+}
+
+ext {
+    set('snippetsDir', file("build/generated-snippets"))
 }
 
 tasks.named('test') {
@@ -47,6 +51,13 @@ tasks.named('test') {
 }
 
 tasks.named('asciidoctor') {
-    inputs.dir snippetsDir
     dependsOn test
+    sourceDir = file("src/asciidoc")
+    outputDir = file("src/main/resources/static/asciidoc")
+
+    configurations 'asciidoctorExtensions'
+}
+
+tasks.named('build') {
+    dependsOn asciidoctor
 }
