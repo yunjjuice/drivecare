@@ -1,0 +1,15 @@
+= API 문서
+:toc: left
+:toclevels: 2
+:sectnums:
+
+== 테스트 문서
+
+=== Request
+include::{snippets}/test-doc/http-request.adoc[]
+include::{snippets}/test-doc/request-fields.adoc[]
+=== Response
+include::{snippets}/test-doc/http-response.adoc[]
+include::{snippets}/test-doc/response-fields.adoc[]
+
+test
