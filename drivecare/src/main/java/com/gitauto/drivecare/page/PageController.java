@@ -1,6 +1,6 @@
 package com.gitauto.drivecare.page;
 
-import jakarta.servlet.http.HttpSession;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,18 +9,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 @RequestMapping("/page")
+@AllArgsConstructor
 public class PageController {
+
+    private final PageService pageService;
+
     @GetMapping("/hello")
-    public String hello(Model model, HttpSession session) {
+    public String hello(Model model) {
         model.addAttribute("pageDto", new PageDto());
 
-        List<String> users = (List<String>) session.getAttribute("users");
-        if (users == null) users = new ArrayList<>();
+        List<PageEntity> users = pageService.findAll();
         model.addAttribute("users", users);
 
         model.addAttribute("today", LocalDate.now());
@@ -28,19 +30,9 @@ public class PageController {
     }
 
     @PostMapping("/hello")
-    public String hello(@ModelAttribute PageDto pageDto, Model model, HttpSession session) {
-        List<String> users = (List<String>) session.getAttribute("users");
-        if (users == null) users = new ArrayList<>();
+    public String hello(@ModelAttribute PageDto pageDto) {
+        pageService.save(pageDto);
 
-        users.add(pageDto.getName());
-
-        session.setAttribute("users", users);
-
-        model.addAttribute("users", users);
-        model.addAttribute("today", LocalDate.now());
-
-        model.addAttribute("pageDto", PageDto.builder().build());
-
-        return "test";
+        return "redirect:/page/hello";
     }
 }
