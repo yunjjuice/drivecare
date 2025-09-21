@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <meta charset="UTF-8">
+  <title>GIT Drivecar+</title>
+</head>
+<body>
+  <header th:replace="~{layout/header :: header}"></header>
+
+  <th:block layout:fragment="content"></th:block>
+
+  <footer th:replace="~{layout/footer :: footer}"></footer>
+
+  <th:block layout:fragment="scripts"></th:block>
+</body>
+</html>

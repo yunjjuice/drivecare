@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/defaultLayout}">
+<div layout:fragment="content">
+  <div th:if="${errorMessage}" class="error">
+    <p th:text="${errorMessage}"></p>
+  </div>
+  <form th:action="@{/login}" th:object="${loginRequestDto}" method="post">
+    <div id="wrap">
+
+      <!-- Visual -->
+      <div class="login_visual_wrap">
+        <div class="text_area">
+          <div class="title">
+            <h1>GIT Drivecare+</h1>
+          </div>
+        </div>
+      </div>
+      <!-- //Visual -->
+
+      <!-- Contents -->
+      <div id="contents">
+        <div id="divWeb">
+          <!-- Login Input -->
+          <div class="login_input_wrap">
+            <ul>
+              <li class="input_id">
+                <span class="tooltip_wrap">
+                    <img src="/images/ico_id.png" alt="Icon"/>
+                    <input type="text" th:field="*{userId}" placeholder="User ID" required/>
+                    <div class="tooltip" id="tooltip_tbID" style="display:none">필수 입력 항목</div>
+                </span>
+              </li>
+              <li class="input_pw">
+                <span class="tooltip_wrap">
+                    <img src="/images/ico_pw.png" alt="Icon"/>
+                    <input type="password" th:field="*{password}" placeholder="Password" autocomplete="off" required/>
+                    <div class="tooltip" id="tooltip_tbPW" style="display:none">필수 입력 항목</div>
+                </span>
+              </li>
+            </ul>
+            <button type="submit" class="btn_login" onclick="return validation();">로그인</button>
+          </div>
+          <!-- //Login Input -->
+
+          <!-- Links -->
+          <div class="link_wrap">
+            <table>
+              <colgroup>
+                <col style="width:50%;" />
+                <col style="width:50%;" />
+              </colgroup>
+              <tbody>
+              <tr>
+                <td><a th:href="@{/register}">회원가입</a></td>
+                <td><a th:href="@{/forgot}">Forgot your ID/Password?</a></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- //Links -->
+        </div>
+      </div>
+      <!-- //Contents -->
+    </div>
+  </form>
+</div>
+</html>
