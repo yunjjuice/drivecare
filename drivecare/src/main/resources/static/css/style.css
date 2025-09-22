@@ -367,6 +367,7 @@ select::-ms-expand {
 .input_wrap td .tooltip_wrap .code input {width:40px; margin-right:4px; text-align:center;}
 .input_wrap td .tooltip {display:inline-block;}
 .input_wrap input[type="text"] {height:34px; line-height:34px; font-size:13px;}
+.input_wrap input[type="email"] {height:34px; line-height:34px; font-size:13px;}
 .input_wrap label {padding-right:8px; position:relative;}
 .input_wrap .required {font-size:0; width:6px; height:5px; background:url(../images/ico_req.png) no-repeat; background-size:6px auto; display:inline-block; position:absolute; top:0; right:0;}
 .input_wrap .noti {margin:5px 0; color:#000;}

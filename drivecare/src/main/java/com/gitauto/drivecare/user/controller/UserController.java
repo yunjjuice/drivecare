@@ -35,7 +35,14 @@ public class UserController {
         try {
             UserEntity user = userService.login(loginRequestDto);
             session.setAttribute("loginUser", user);
-            return "redirect:/";
+            if ("dealer".equals(user.getAuth()) || "admin".equals(user.getAuth())) {
+                return "redirect:/main/dealer";
+            } else if ("user".equals(user.getAuth())) {
+                return "redirect:/main/user";
+            } else {
+                model.addAttribute("errorMessage", "알 수 없는 권한입니다.");
+                return "user/login";
+            }
         } catch (RuntimeException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "user/login";
