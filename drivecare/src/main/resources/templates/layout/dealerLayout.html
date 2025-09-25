@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <link rel="stylesheet" th:href="@{/css/dealer/dealer-style.css}">
+  <script th:src="@{/js/dealer/dealer-common.js}"></script>
+  <meta charset="UTF-8">
+  <title>GIT Drivecar+</title>
+</head>
+<body>
+  <div class="app">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo" aria-hidden="true"></div>
+        <div>
+          <b>정비소 관리자</b><br/>
+          <span class="muted" style="font-size:12px">Garage Admin Console</span>
+        </div>
+      </div>
+
+      <div class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M21 21l-4.3-4.3m1.3-4.7a7 7 0 11-14 0 7 7 0 0114 0z"
+                stroke="#6f7a90" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input placeholder="고객/예약/차량 검색…" />
+      </div>
+
+      <nav class="nav">
+        <ul>
+          <li>
+            <a th:href="@{/dealer/dashboard}"
+               th:classappend="${currentPath == '/dealer/dashboard'} ? 'active'">
+              🏠 대시보드 <span class="pill">새 3</span>
+            </a>
+          </li>
+          <li>
+            <a th:href="@{/dealer/profile}"
+               th:classappend="${currentPath == '/dealer/profile'} ? 'active'">
+              🏷️ 정비소 정보
+            </a>
+          </li>
+          <li>
+            <a th:href="@{/services}"
+               th:classappend="${currentPath == '/services'} ? 'active'">
+              🧰 서비스·가격
+            </a>
+          </li>
+          <li>
+            <a th:href="@{/booking}"
+               th:classappend="${currentPath == '/booking'} ? 'active'">
+              📅 예약 관리
+            </a>
+          </li>
+          <li>
+            <a th:href="@{/inventory}"
+               th:classappend="${currentPath == '/inventory'} ? 'active'">
+              📦 재고
+            </a>
+          </li>
+          <li>
+            <a th:href="@{/staff}"
+               th:classappend="${currentPath == '/staff'} ? 'active'">
+              👥 직원
+            </a>
+          </li>
+          <li>
+            <a th:href="@{/reviews}"
+               th:classappend="${currentPath == '/reviews'} ? 'active'">
+              ⭐ 리뷰
+            </a>
+          </li>
+          <li>
+            <a th:href="@{/analytics}"
+               th:classappend="${currentPath == '/analytics'} ? 'active'">
+              📈 통계
+            </a>
+          </li>
+          <li>
+            <a th:href="@{/settings}"
+               th:classappend="${currentPath == '/settings'} ? 'active'">
+              ⚙️ 설정
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="foot">v1.0 · 로컬 데모 UI</div>
+    </aside>
+
+    <!-- 우측 메인 컨텐츠 -->
+    <section layout:fragment="dealerContent"></section>
+  </div>
+</body>
+</html>

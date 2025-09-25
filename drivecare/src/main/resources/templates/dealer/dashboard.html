@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/dealerLayout}">
+<div layout:fragment="dealerContent">
+  <!-- Main -->
+  <main class="main">
+    <header class="top">
+      <span class="chip">정비소 상태: <b>영업 준비</b></span>
+      <div class="spacer"></div>
+      <div class="user">
+        <div class="avatar" aria-hidden="true"></div>
+        <div>
+          <b>홍길동 정비사</b><br/>
+          <small class="muted">master@garage.co.kr</small>
+        </div>
+      </div>
+    </header>
+
+    <!-- Dashboard -->
+    <section class="section active" id="dashboard">
+      <div class="grid cols-3">
+        <div class="card kpi">
+          <div>
+            <small>오늘 예약</small>
+            <strong>7건</strong>
+          </div>
+          <span class="badge ok">+2 증가</span>
+        </div>
+        <div class="card kpi">
+          <div>
+            <small>평균 대기시간</small>
+            <strong>18분</strong>
+          </div>
+          <span class="badge warn">주의</span>
+        </div>
+        <div class="card kpi">
+          <div>
+            <small>월 매출</small>
+            <strong>₩12,480,000</strong>
+          </div>
+          <span class="badge">예상</span>
+        </div>
+      </div>
+
+      <div class="grid cols-2" style="margin-top:var(--gap)">
+        <div class="card">
+          <h3>진행 중 작업</h3>
+          <table>
+            <thead><tr><th>접수시간</th><th>고객</th><th>차량</th><th>서비스</th><th>상태</th></tr></thead>
+            <tbody id="jobsBody">
+            <tr><td>09:10</td><td>김민수</td><td>쏘나타</td><td>엔진오일 교환</td><td><span class="status inprog">작업중</span></td></tr>
+            <tr><td>10:00</td><td>박지현</td><td>코나</td><td>타이어 교체</td><td><span class="status new">대기</span></td></tr>
+            <tr><td>10:40</td><td>이준호</td><td>K5</td><td>브레이크 패드</td><td><span class="status inprog">작업중</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <h3>오늘 일정</h3>
+          <table>
+            <thead><tr><th>시간</th><th>고객</th><th>연락처</th><th>메모</th></tr></thead>
+            <tbody>
+            <tr><td>11:30</td><td>최유진</td><td>010-1234-5678</td><td>에어컨 점검</td></tr>
+            <tr><td>14:00</td><td>한서준</td><td>010-9876-5432</td><td>배터리 교체</td></tr>
+            <tr><td>16:20</td><td>오주연</td><td>010-2222-3333</td><td>휠 얼라인먼트</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Profile -->
+    <section class="section" id="profile">
+      <div class="grid cols-2">
+        <div class="card">
+          <h3>정비소 기본 정보</h3>
+          <div class="two">
+            <div>
+              <label>상호명</label>
+              <input type="text" id="shopName" placeholder="예: 길동모터스" required />
+            </div>
+            <div>
+              <label>사업자등록번호</label>
+              <input type="text" id="bizNo" placeholder="000-00-00000" />
+            </div>
+          </div>
+          <div class="two" style="margin-top:10px">
+            <div>
+              <label>대표 연락처</label>
+              <input type="tel" id="phone" placeholder="010-0000-0000"/>
+            </div>
+            <div>
+              <label>대표 이메일</label>
+              <input type="email" id="email" placeholder="info@garage.co.kr"/>
+            </div>
+          </div>
+          <div style="margin-top:10px">
+            <label>주소</label>
+            <input type="text" id="address" placeholder="도로명 주소" />
+            <p class="help">지번/도로명 모두 입력 가능. 지도 연동은 백엔드 연결 후 사용.</p>
+          </div>
+          <div style="margin-top:10px">
+            <label>소개</label>
+            <textarea id="about" placeholder="정비소 소개를 입력하세요."></textarea>
+          </div>
+          <div style="margin-top:10px">
+            <label>편의시설</label>
+            <div class="pillset">
+              <span class="pill badge">와이파이</span>
+              <span class="pill badge">대기실</span>
+              <span class="pill badge">야간 입고</span>
+              <span class="pill badge">대차 서비스</span>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="btn ghost" data-demo="fill">데모 채우기</button>
+            <button class="btn primary" data-save="profile">저장</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>영업 시간</h3>
+          <table class="hours">
+            <thead><tr><th>요일</th><th>오픈</th><th>마감</th><th>휴무</th></tr></thead>
+            <tbody id="hoursBody">
+            <!-- JS가 생성 -->
+            </tbody>
+          </table>
+          <div class="actions">
+            <button class="btn" id="copyWeek">평일 복사</button>
+            <button class="btn primary" data-save="hours">저장</button>
+          </div>
+          <p class="help">특별휴무(명절 등)는 예약 화면에서 차단 가능.</p>
+        </div>
+
+        <div class="card" style="grid-column: 1/-1">
+          <h3>사진 / 문서</h3>
+          <div class="uploader" id="gallery">
+            <label class="upload-tile" style="cursor:pointer">
+              <input type="file" accept="image/*" multiple style="display:none" id="fileInput" />
+              + 업로드
+            </label>
+            <!-- 미리보기 타일이 여기에 추가됨 -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services -->
+    <section class="section" id="services">
+      <div class="card">
+        <h3>서비스·가격표</h3>
+        <div class="three">
+          <div>
+            <label>서비스명</label>
+            <input type="text" id="svcName" placeholder="예: 엔진오일 교환" />
+          </div>
+          <div>
+            <label>소요시간(분)</label>
+            <input type="number" id="svcMins" placeholder="30" min="5" step="5" />
+          </div>
+          <div>
+            <label>가격(₩)</label>
+            <input type="number" id="svcPrice" placeholder="30000" min="0" step="1000" />
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn" id="addSvc">추가</button>
+          <button class="btn primary" data-save="services">저장</button>
+        </div>
+        <table id="svcTable" style="margin-top:10px">
+          <thead><tr><th>서비스명</th><th>소요시간</th><th>가격</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Booking -->
+    <section class="section" id="booking">
+      <div class="card">
+        <h3>예약 관리</h3>
+        <div class="row">
+          <div class="two" style="flex:1">
+            <div><label>검색</label><input type="text" id="bkSearch" placeholder="고객/차량/연락처"/></div>
+            <div>
+              <label>상태</label>
+              <select id="bkStatus">
+                <option value="">전체</option>
+                <option value="new">대기</option>
+                <option value="inprog">작업중</option>
+                <option value="done">완료</option>
+              </select>
+            </div>
+          </div>
+          <div class="actions" style="align-self:end">
+            <button class="btn" id="bkFilter">필터</button>
+            <button class="btn primary" id="bkNew">새 예약</button>
+          </div>
+        </div>
+        <table id="bkTable" style="margin-top:10px">
+          <thead><tr><th>일시</th><th>고객</th><th>차량</th><th>서비스</th><th>상태</th><th>연락처</th><th></th></tr></thead>
+          <tbody>
+          <tr><td>2025-09-24 11:30</td><td>최유진</td><td>아반떼</td><td>에어컨 점검</td><td><span class="status new">대기</span></td><td>010-1234-5678</td><td><button class="btn">상세</button></td></tr>
+          <tr><td>2025-09-24 14:00</td><td>한서준</td><td>코나</td><td>배터리 교체</td><td><span class="status inprog">작업중</span></td><td>010-9876-5432</td><td><button class="btn">상세</button></td></tr>
+          <tr><td>2025-09-24 16:20</td><td>오주연</td><td>K3</td><td>휠 얼라인먼트</td><td><span class="status done">완료</span></td><td>010-2222-3333</td><td><button class="btn">상세</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Inventory -->
+    <section class="section" id="inventory">
+      <div class="card">
+        <h3>재고 현황</h3>
+        <table>
+          <thead><tr><th>품목</th><th>브랜드</th><th>재고</th><th>최소수량</th><th>단가(₩)</th><th></th></tr></thead>
+          <tbody id="invBody">
+          <tr><td>엔진오일 5W30</td><td>모빌</td><td>24</td><td>10</td><td>12,000</td><td><button class="btn">발주</button></td></tr>
+          <tr><td>브레이크 패드(앞)</td><td>현대모비스</td><td>8</td><td>6</td><td>45,000</td><td><button class="btn">발주</button></td></tr>
+          <tr><td>배터리 60Ah</td><td>델코</td><td>3</td><td>5</td><td>98,000</td><td><span class="badge danger">재고부족</span></td></tr>
+          </tbody>
+        </table>
+        <div class="actions">
+          <button class="btn" id="invAdd">품목 추가</button>
+          <button class="btn primary" data-save="inventory">저장</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Staff -->
+    <section class="section" id="staff">
+      <div class="card">
+        <h3>직원</h3>
+        <div class="three">
+          <div><label>이름</label><input id="stName" placeholder="예: 이정비"/></div>
+          <div><label>역할</label><input id="stRole" placeholder="수석/도장/전기"/></div>
+          <div><label>연락처</label><input id="stPhone" placeholder="010-0000-0000"/></div>
+        </div>
+        <div class="actions"><button class="btn" id="stAdd">추가</button></div>
+        <table id="stTable" style="margin-top:10px">
+          <thead><tr><th>이름</th><th>역할</th><th>연락처</th><th>출근</th><th></th></tr></thead>
+          <tbody>
+          <tr><td>박정비</td><td>수석</td><td>010-5555-2222</td><td><span class="badge ok">근무중</span></td><td><button class="btn danger">삭제</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Reviews -->
+    <section class="section" id="reviews">
+      <div class="card">
+        <h3>리뷰 관리</h3>
+        <table>
+          <thead><tr><th>날짜</th><th>고객</th><th>평점</th><th>내용</th><th></th></tr></thead>
+          <tbody>
+          <tr><td>2025-09-22</td><td>김나현</td><td>★★★★★</td><td>빠르고 친절하게 처리됐어요.</td><td><button class="btn">답글</button></td></tr>
+          <tr><td>2025-09-20</td><td>정우성</td><td>★★★☆☆</td><td>대기 시간이 좀 길었어요.</td><td><button class="btn">답글</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Analytics -->
+    <section class="section" id="analytics">
+      <div class="grid cols-3">
+        <div class="card">
+          <h3>월별 예약</h3>
+          <canvas id="chartBookings" height="150" aria-label="월별 예약 차트"></canvas>
+        </div>
+        <div class="card">
+          <h3>매출 추정</h3>
+          <canvas id="chartRevenue" height="150" aria-label="월별 매출 차트"></canvas>
+        </div>
+        <div class="card">
+          <h3>서비스 TOP5</h3>
+          <ol id="svcTop" class="muted" style="margin:0; padding-left:18px">
+            <li>엔진오일 교환</li>
+            <li>타이어 교체</li>
+            <li>배터리 교체</li>
+            <li>브레이크 패드</li>
+            <li>에어컨 점검</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- Settings -->
+    <section class="section" id="settings">
+      <div class="card">
+        <h3>알림 및 예약 옵션</h3>
+        <div class="two">
+          <div class="inline">
+            <div class="switch" data-toggle="sms"></div>
+            <div>
+              <b>SMS 알림</b><br><span class="muted">예약 확정/변경/완료 시 문자 발송</span>
+            </div>
+          </div>
+          <div class="inline">
+            <div class="switch on" data-toggle="autoConfirm"></div>
+            <div>
+              <b>자동 예약확정</b><br><span class="muted">운영시간 내, 중복 없을 때 자동 승인</span>
+            </div>
+          </div>
+        </div>
+        <div class="actions"><button class="btn primary" data-save="settings">저장</button></div>
+      </div>
+    </section>
+
+    <div class="toast" id="toast">저장되었습니다.</div>
+  </main>
+</div>
+</html>
