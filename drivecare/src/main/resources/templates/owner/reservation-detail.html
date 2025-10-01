@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/ownerLayout}">
+<div layout:fragment="ownerContent">
+    <main class="main">
+        <!-- 예약 정보 카드 -->
+        <div class="reservation-card">
+            <h2>예약 정보</h2>
+            <div class="info-section">
+                <p><strong>예약 번호:</strong> #123456789</p>
+                <p><strong>예약 날짜:</strong> 2025-10-02</p>
+                <p><strong>예약 시간:</strong> 10:00 AM</p>
+                <p><strong>정비소:</strong> 서울 오토 정비소</p>
+                <p><strong>예약 상태:</strong> <span class="status-badge status-confirmed">확정</span></p>
+            </div>
+
+            <h3>차량 정보</h3>
+            <div class="info-section">
+                <p><strong>차종:</strong> 현대 아반떼 2021</p>
+                <p><strong>번호판:</strong> 12가 3456</p>
+                <p><strong>주행거리:</strong> 35,200 km</p>
+            </div>
+
+            <h3>정비 항목</h3>
+            <div class="info-section">
+                <ul>
+                    <li>브레이크 점검</li>
+                    <li>타이어 교체</li>
+                    <li>엔진 오일 교환</li>
+                    <li>배터리 점검</li>
+                </ul>
+            </div>
+
+            <h3>정비 상세</h3>
+            <div class="info-section">
+                <ul>
+                    <li>모든 정비 마무리 되었으며, 이상이 있는 경우 재방문 부탁드립니다.</li>
+                </ul>
+            </div>
+
+            <h3>정비소 정보</h3>
+            <div class="info-section">
+                <p><strong>전화:</strong> 02-1234-5678</p>
+                <p><strong>주소:</strong> 서울특별시 강남구 테헤란로 123</p>
+            </div>
+        </div>
+    </main>
+</div>

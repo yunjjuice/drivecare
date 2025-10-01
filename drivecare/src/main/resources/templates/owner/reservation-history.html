@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/ownerLayout}">
+<div layout:fragment="ownerContent">
+    <main class="main">
+    <!-- 예약 이력 카드 -->
+    <div class="card">
+        <h2>예약 이력</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>예약일</th>
+                <th>정비소</th>
+                <th>상태</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>2025-10-02</td>
+                <td><a th:href="@{/owner/reservation/detail}">서울 오토 정비소</a></td>
+                <td><span class="status-badge status-confirmed">확정</span></td>
+            </tr>
+            <tr>
+                <td>2025-09-28</td>
+                <td><a th:href="@{/owner/reservation/detail}">강남 카센터</a></td>
+                <td><span class="status-badge status-pending">대기</span></td>
+            </tr>
+            <tr>
+                <td>2025-09-15</td>
+                <td><a th:href="@{/owner/reservation/detail}">시내 서비스센터</a></td>
+                <td><span class="status-badge status-canceled">취소</span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</div>
+
