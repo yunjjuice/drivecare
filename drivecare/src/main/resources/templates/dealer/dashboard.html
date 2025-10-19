@@ -11,8 +11,8 @@
       <div class="user">
         <div class="avatar" aria-hidden="true"></div>
         <div>
-          <b>홍길동 정비사</b><br/>
-          <small class="muted">master@garage.co.kr</small>
+          <b th:text="${loginUser.name}"></b><br/>
+          <small class="muted" th:text="${loginUser.email}"></small>
         </div>
       </div>
     </header>
