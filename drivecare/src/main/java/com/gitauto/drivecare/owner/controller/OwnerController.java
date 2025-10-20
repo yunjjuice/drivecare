@@ -1,8 +1,11 @@
 package com.gitauto.drivecare.owner.controller;
 
+import com.gitauto.drivecare.owner.dto.MainResponseDto;
+import com.gitauto.drivecare.owner.dto.ReservationDetailRequestDto;
 import com.gitauto.drivecare.owner.dto.ReservationRequestDto;
 import com.gitauto.drivecare.owner.service.OwnerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,15 +22,14 @@ public class OwnerController {
 
     @GetMapping
     public String userMain(Model model) {
-//        ownerService.repairMain()
+        MainResponseDto mainResponseDto = ownerService.repairMain();
+        model.addAttribute("main", mainResponseDto);
 
         return "owner/main";
     }
 
     @GetMapping("/reservation")
-    public String userReservation(Model model) {
-//        ownerService.repairMain()
-
+    public String userReservation() {
         return "owner/reservation";
     }
 
@@ -35,20 +37,19 @@ public class OwnerController {
     public String userReservation(@ModelAttribute ReservationRequestDto reservationDto) {
         ownerService.reservation(reservationDto);
 
-        return "redirect://owner/main";
+        return "redirect:/owner";
     }
 
-
     @GetMapping("/reservation/history")
-    public String userReservationHistory(Model model) {
-        model.addAttribute("reservation-list", ownerService.reservationHistory());
+    public String userReservationHistory(Pageable pageable, Model model) {
+        model.addAttribute("reservationList", ownerService.reservationHistory(pageable));
 
         return "owner/reservation-history";
     }
 
-    @GetMapping("/reservation/detail")
-    public String userReservationDetail(Model model) {
-        model.addAttribute("reservation-detail", ownerService.reservationDetail());
+    @PostMapping("/reservation/detail")
+    public String userReservationDetail(@ModelAttribute ReservationDetailRequestDto reservationDto, Model model) {
+        model.addAttribute("reservationDetail", ownerService.reservationDetail(reservationDto));
 
         return "owner/reservation-detail";
     }

@@ -4,7 +4,7 @@
       xmlns:layout="http://ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/ownerLayout}">
 <head>
-    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=3e70a3ac992cb619ac796a67b4f61b2d"></script>
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=3e70a3ac992cb619ac796a67b4f61b2d&libraries=services"></script>
 </head>
 <div layout:fragment="ownerContent">
 <main class="main">
@@ -25,21 +25,28 @@
 <br/>
     <div class="card" id="reservation-card" style="display:none;">
         <h2>예약하기</h2>
-        <form id="reservation-form">
+        <form id="reservation-form" th:action="@{/owner/reservation/create}" method="post">
+
+            <!-- 정비소 ID를 담을 숨겨진 필드 -->
+            <input type="hidden" id="car-center-id" name="CarCenterId" />
+
             <label>정비소명</label>
             <input type="text" id="selected-shop" readonly />
 
             <label>예약 날짜</label>
-            <input type="date" id="repair-date" required />
+            <input type="date" id="reserve-date" name="reserveDate" required />
 
             <label>예약 시간</label>
-            <input type="time" id="repair-time" required />
+            <input type="time" id="reserve-time" name="reserveTime" required />
 
-            <label>차량 정보</label>
-            <input type="text" id="car-info" placeholder="예: 현대 아반떼 2021" required />
+            <label>차종</label>
+            <input type="text" id="car-model" name="car-model" placeholder="예: 현대 아반떼 2021" required />
 
-            <label>증상</label>
-            <textarea id="symptom" placeholder="예: 엔진 소음 발생" required></textarea>
+            <label>차량 번호</label>
+            <input type="text" id="car-number" name="car-number" placeholder="예: 12가 3456" required />
+
+            <label>증상 설명</label>
+            <textarea id="symptom" name="desc" placeholder="예: 엔진 소음 발생" required></textarea>
 
             <button type="submit" class="btn">예약하기</button>
         </form>

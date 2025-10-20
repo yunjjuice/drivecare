@@ -1,4 +1,4 @@
-package com.gitauto.drivecare.carcenter.entity;
+package com.gitauto.drivecare.car_center.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,4 +25,13 @@ public class CarCenterEntity {
 
     @Column(name = "TEL_NO")
     private String telNo;
+
+    @Column(name = "`DESC`")
+    private String desc;
+
+    @Column(name = "LATITUDE")
+    private Double latitude;
+
+    @Column(name = "LONGITUDE")
+    private Double longitude;
 }

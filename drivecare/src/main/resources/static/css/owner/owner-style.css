@@ -140,7 +140,7 @@ body{
 }
 
 .vehicle-img-container {
-    flex: 0 0 60%;
+    flex: 0 0 85%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -157,7 +157,7 @@ body{
 }
 
 .vehicle-info {
-    flex: 0 0 40%;
+    flex: 0 0 15%;
 }
 
 .vehicle-info h2 {
@@ -262,6 +262,7 @@ table th {
 
 .status-confirmed { background: #38a169; }
 .status-pending { background: #d69e2e; }
+.status-rejected { background: darkred; }
 
 .btn {
     display: inline-block;
@@ -334,16 +335,23 @@ table th {
     transition: all 0.3s ease;
 }
 
+.post-link {
+    background: none;      /* 배경색과 이미지를 모두 제거 */
+    border: none;          /* 테두리 제거 */
+    padding: 0;            /* 내부 여백 제거 */
+    margin: 0;             /* 외부 여백 제거 */
+    color: #1e3a8a;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer; /* 마우스 커서를 손가락 모양으로 */
+}
+
 #reservation-form button:hover {
     background: linear-gradient(90deg, #2c5282, #3b6fa6);
     transform: translateY(-2px);
     box-shadow:0 6px 12px rgba(0,0,0,0.15);
 }
 
-/*.card { background:white; padding:25px; border-radius:15px; box-shadow:0 6px 15px rgba(0,0,0,0.1); }*/
-/*.card h2 { margin-top:0; margin-bottom:20px; font-size:1.6rem; font-weight:600; }*/
-/*.btn { padding:14px; background:#1e3a8a; color:white; border-radius:8px; border:none; cursor:pointer; font-size:1.1rem; font-weight:600; transition:0.3s; }*/
-/*.btn:hover { background:#2c5282; }*/
 .map-wrapper { position:relative; width:100%; height:500px; border-radius:12px; overflow:hidden; }
 #map { width:100%; height:100%; }
 #shop-detail {
@@ -357,52 +365,102 @@ table th {
 #search-bar { display:flex; gap:8px; margin-bottom:12px; }
 #search-input { flex:1; padding:12px; border-radius:8px; border:1px solid #ddd; font-size:1rem; }
 
+/* 전체 카드 스타일 */
 .reservation-card {
     background: var(--panel);
-    padding: 24px;
+    padding: 30px 35px; /* 패딩 증가 */
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    margin-bottom: var(--gap);
+    border: 1px solid var(--border);
 }
 
-/* 예약 정보 제목 */
-.reservation-card h2, h3 {
-    font-size: 1.8rem;
-    font-weight: bold;
+/* 메인 제목 (예약 정보) */
+.reservation-card > h2 {
+    font-size: 2rem; /* 폰트 크기 증가 */
+    font-weight: 700;
     color: var(--text);
-    margin-bottom: 20px;
-    border-bottom: 2px solid var(--border);
-    padding-bottom: 10px;
+    margin: 0 0 25px 0;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
 }
 
-/* 예약 정보 섹션 */
-.info-section {
-    margin-bottom: var(--gap);
-    padding: 16px;
-    background: #fff;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
+/* 정보 섹션을 Grid 레이아웃으로 변경 */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2열 그리드 */
+    gap: 30px 40px; /* 행, 열 간격 */
+    margin-bottom: 30px;
 }
 
-.info-section p {
-    margin: 8px 0;
+/* 각 정보 그룹 (기존 info-section 대체) */
+.info-group {
+    background: none; /* 내부 카드 스타일 제거 */
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+}
+
+.info-group h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--accent); /* 포인트 색상 */
+    margin: 0 0 18px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #eaf2ff; /* 부드러운 밑줄 */
+}
+
+/* Key-Value 형태의 정보 표시 */
+.info-group p {
+    display: flex;
+    justify-content: space-between;
     font-size: 1rem;
+    margin: 12px 0;
     color: var(--muted);
+    padding-bottom: 12px;
+    border-bottom: 1px dashed var(--border); /* 점선 구분 */
+}
+.info-group p:last-child {
+    border-bottom: none; /* 마지막 항목은 밑줄 제거 */
 }
 
-.info-section strong {
+.info-group p strong {
     color: var(--text);
+    font-weight: 500;
 }
 
-/* 예약 상태 배지 */
-.status-badge {
-    padding: 5px 10px;
-    border-radius: 8px;
-    font-weight: bold;
-    color: white;
-    text-transform: uppercase;
-    display: inline-block;
+/* 정비 항목/상세 리스트 스타일 */
+.info-group ul {
+    list-style: none;
+    padding-left: 0;
 }
+
+.info-group ul li {
+    background: #f9fafb;
+    padding: 12px 15px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    color: var(--text);
+    border-left: 3px solid var(--accent-2); /* 왼쪽 강조선 (초록) */
+}
+.info-group ul li::before {
+    content: '✓'; /* 체크 아이콘 */
+    margin-right: 10px;
+    color: var(--accent-2);
+    font-weight: bold;
+}
+
+/* 상태 배지 스타일 개선 */
+.status-badge {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+}
+
+/* 1열로 넓게 표시할 그룹 */
+.full-width {
+    grid-column: 1 / -1; /* 그리드의 전체 너비 사용 */
+}
+
 
 .status-confirmed {
     background: var(--ok);
@@ -481,4 +539,53 @@ h3 + .info-section {
 
 .status-canceled {
     background: #e53e3e;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+}
+
+.pagination ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 4px;
+}
+
+.pagination li {
+    display: inline-block;
+}
+
+.pagination a {
+    display: block;
+    padding: 8px 14px;
+    background: #f7f7f7;
+    color: #333;
+    border-radius: 4px;
+    text-decoration: none;
+    border: 1px solid #ddd;
+    transition: background 0.2s, color 0.2s;
+}
+
+.pagination li.active a {
+    background: #1976d2;
+    color: #fff;
+    border-color: #1976d2;
+    font-weight: bold;
+}
+
+.pagination li.disabled a {
+    background: #eee;
+    color: #aaa;
+    pointer-events: none;
+    border-color: #eee;
+}
+
+.pagination a:hover:not(.disabled) {
+    background: #e3f2fd;
+    color: #1976d2;
+    border-color: #90caf9;
 }

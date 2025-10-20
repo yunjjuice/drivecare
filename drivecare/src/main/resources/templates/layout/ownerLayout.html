@@ -4,6 +4,7 @@
 <head>
     <link rel="stylesheet" th:href="@{/css/owner/owner-style.css}">
     <script th:src="@{/js/owner/owner-common.js}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <meta charset="UTF-8">
     <title>GIT Drivecar+</title>
 </head>
@@ -25,7 +26,7 @@
                 <li>
                     <a th:href="@{/owner}"
                        th:classappend="${currentPath == '/owner'} ? 'active'">
-                        🏠 대시보드 <span class="pill">새 3</span>
+                        🏠 대시보드
                     </a>
                 </li>
                 <li>

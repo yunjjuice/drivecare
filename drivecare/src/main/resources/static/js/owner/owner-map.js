@@ -1,69 +1,61 @@
 kakao.maps.load(function() {
     let map, markers = {}, registeredShops = [];
 
-    // 샘플 DB 등록 정비소
-    registeredShops = [
-        {id: 'seoul-auto', name: '서울 오토 정비소', bizNo: '123-45-67890', phone: '02-123-4567', email: 'seoulauto@shop.co.kr', address: '서울특별시 중구 세종대로 110', about: '20년 경력의 베테랑 정비소', facilities: ['와이파이', '대기실'], lat: 37.5665, lng: 126.9780},
-        {id: 'gangnam-car', name: '강남 카센터', bizNo: '222-11-33333', phone: '02-987-6543', email: 'gangnam@car.co.kr', address: '서울특별시 강남구 강남대로 123', about: '친절한 서비스와 합리적인 가격', facilities: ['대기실', '대차 서비스'], lat: 37.4979, lng: 127.0276}
-    ];
-
     // 지도 초기화
     map = new kakao.maps.Map(document.getElementById('map'), {
         center: new kakao.maps.LatLng(37.5665, 126.9780),
         level: 4
     });
 
-    // DB 등록 정비소 마커
-    registeredShops.forEach(shop => {
-        const marker = new kakao.maps.Marker({
-            position: new kakao.maps.LatLng(shop.lat, shop.lng),
-            title: shop.name
-        });
-        marker.setMap(map);
-        markers[shop.id] = marker;
-        kakao.maps.event.addListener(marker, 'click', () => showShopDetail(shop, true));
+    // 등록 DB 정비소 마커
+    $.ajax({
+        url: '/ajax/carcenter/list',
+        method: 'GET',
+        success: function(data) {
+            registeredShops = data;
+            registeredShops.forEach(shop => {
+                const marker = new kakao.maps.Marker({
+                    position: new kakao.maps.LatLng(shop.latitude, shop.longitude),
+                    title: shop.name
+                });
+                marker.setMap(map);
+                markers[shop.id] = marker;
+                kakao.maps.event.addListener(marker, 'click', () => showShopDetail(shop, true));
+            });
+
+        },
+        error: function(err) {
+            console.error(err);
+        }
     });
 
     // 정비소 상세정보 표시 + 예약폼 노출
     function showShopDetail(shop, isRegistered = true) {
-        const facilitiesHtml = (shop.facilities || []).map(f => `<span class="pill">${f}</span>`).join('');
+
+        console.log(shop);
+        const tmpFacilities = ["와이파이", "대기실"];
+        const facilitiesHtml = (tmpFacilities || []).map(f => `<span class="pill">${f}</span>`).join('');
         const reserveText = isRegistered ? '<b style="color:green">예약 가능</b>' : '<b style="color:red">예약 불가</b>';
+
         document.getElementById('shop-detail').innerHTML = `
                 <h3>${shop.name}</h3>
                 <p>${reserveText}</p>
                 <p><b>주소:</b> ${shop.address}</p>
-                <p><b>☎:</b> ${shop.phone || '정보 없음'}</p>
+                <p><b>☎:</b> ${shop.telNo || '정보 없음'}</p>
                 ${shop.email ? `<p><b>Email:</b> ${shop.email}</p>` : ''}
                 ${shop.bizNo ? `<p><b>사업자번호:</b> ${shop.bizNo}</p>` : ''}
-                ${shop.about ? `<p>${shop.about}</p>` : ''}
+                ${shop.desc ? `<p>${shop.desc}</p>` : ''}
                 <div class="pillset">${facilitiesHtml}</div>
             `;
         const reservationCard = document.getElementById('reservation-card');
         if (isRegistered) {
             reservationCard.style.display = 'block';
             document.getElementById('selected-shop').value = shop.name;
+            document.getElementById('car-center-id').value = shop.id || '';
         } else {
             reservationCard.style.display = 'none';
         }
     }
-
-    // 예약 제출
-    document.getElementById('reservation-form').addEventListener('submit', function (e) {
-        e.preventDefault();
-        const shop = document.getElementById('selected-shop').value;
-        const date = document.getElementById('repair-date').value;
-        const time = document.getElementById('repair-time').value;
-        const car = document.getElementById('car-info').value;
-        const symptom = document.getElementById('symptom').value;
-
-        if (!shop || !date || !time || !car || !symptom) {
-            alert('모든 항목을 입력해주세요.');
-            return;
-        }
-
-        alert('예약이 확정되었습니다!');
-        window.location.href = '/owner/reservation/history';
-    });
 
     // 검색 버튼 클릭 시
     document.getElementById('search-btn').addEventListener('click', function() {

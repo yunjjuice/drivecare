@@ -1,6 +1,6 @@
-package com.gitauto.drivecare.owner.entity;
+package com.gitauto.drivecare.repair_reservation.entity;
 
-import com.gitauto.drivecare.carcenter.entity.CarCenterEntity;
+import com.gitauto.drivecare.car_center.entity.CarCenterEntity;
 import com.gitauto.drivecare.user.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -42,11 +42,18 @@ public class RepairReservationEntity {
     @Column(name = "APPROVE_DT")
     private LocalDateTime approveDt;
 
-    @Column(name = "APPROVE_YN", columnDefinition = "CHAR(1) DEFAULT 'N'", nullable = false)
-    private Character approveYn;
+    @Column(name = "APPROVE_STATUS", columnDefinition = "CHAR(1) DEFAULT 'P'", nullable = false)
+    private Character approveStatus;
 
-    // 차종 정보 추가
-
-    @Column(name = "DESC")
+    @Column(name = "`DESC`")
     private String desc;
+
+    @Column(name = "CAR_MODEL")
+    private String carModel;
+
+    @Column(name = "CAR_NUMBER")
+    private String carNumber;
+
+    @Column(name = "REPAIR_DESC")
+    private String repairDesc;
 }

@@ -1,21 +1,27 @@
 package com.gitauto.drivecare.owner.service;
 
-import com.gitauto.drivecare.carcenter.entity.CarCenterEntity;
-import com.gitauto.drivecare.carcenter.repository.CarCenterRepository;
+import com.gitauto.drivecare.car_center.entity.CarCenterEntity;
+import com.gitauto.drivecare.car_center.repository.CarCenterRepository;
+import com.gitauto.drivecare.owner.dto.*;
+import com.gitauto.drivecare.owner.dto.ReservationDetailRequestDto;
 import com.gitauto.drivecare.owner.dto.ReservationDetailResponseDto;
 import com.gitauto.drivecare.owner.dto.ReservationRequestDto;
 import com.gitauto.drivecare.owner.dto.ReservationResponseDto;
-import com.gitauto.drivecare.owner.entity.RepairReservationEntity;
-import com.gitauto.drivecare.owner.repository.RepairReservationRepository;
+import com.gitauto.drivecare.repair_reservation.entity.RepairReservationEntity;
+import com.gitauto.drivecare.repair_reservation.repository.RepairReservationRepository;
 import com.gitauto.drivecare.user.entity.UserEntity;
 import com.gitauto.drivecare.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.time.ZoneOffset;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,12 +32,19 @@ public class OwnerService {
     private final CarCenterRepository carCenterRepository;
     private final UserRepository userRepository;
 
-    public String repairMain() {
-        // 대시보드 - 자동차 정보..
+    public MainResponseDto repairMain() {
+        // 자동차 정보
         // 운전데이터 (운전점수)
-        // 예약 현황
-        return "";
 
+        List<RepairReservationEntity> reservationList = repairReservationRepository.findByReserveDtAfterOrderByReserveDt(LocalDateTime.now());
+
+        MainResponseDto mainResponseDto = MainResponseDto.builder()
+                .reservationList(reservationList.stream()
+                        .map(r -> new MainResponseDto.ReservationDto(r.getId(), r.getReserveDt(), r.getCarCenter().getName(), r.getApproveStatus()))
+                        .collect(Collectors.toList()))
+                .build();
+
+        return mainResponseDto;
     }
 
     public void reservation(ReservationRequestDto reservationDto) {
@@ -46,18 +59,68 @@ public class OwnerService {
                 LocalDateTime.now(),
                 reservationDto.getReserveDt(),
                 null,
-                'N',
-                reservationDto.getDesc()
+                'P',
+                reservationDto.getDesc(),
+                reservationDto.getCarModel(),
+                reservationDto.getCarNumber(),
+                null
         );
 
         repairReservationRepository.save(repairReservation);
     }
 
-    public List<ReservationResponseDto> reservationHistory() {
-        return List.of();
+    public List<ReservationResponseDto> getUpcomingReservationList() {
+        List<RepairReservationEntity> reservationList = repairReservationRepository.findByReserveDtAfterAndUser_UserId(LocalDateTime.now(ZoneOffset.UTC), "test03");
+
+        List<ReservationResponseDto> reservationResponseList = reservationList.stream()
+                .map(r -> new ReservationResponseDto(
+                        r.getId(),
+                        r.getCarCenter().getAddress(),
+                        r.getReserveDt(),
+                        r.getCarCenter().getName(),
+                        r.getCarCenter().getTelNo(),
+                        r.getApproveStatus()
+                ))
+                .toList();
+
+        return reservationResponseList;
     }
 
-    public ReservationDetailResponseDto reservationDetail() {
-        return new ReservationDetailResponseDto();
+
+    public Page<ReservationResponseDto> reservationHistory(Pageable pageable) {
+        Page<RepairReservationEntity> repairReservation = repairReservationRepository.findAllByUser_UserIdOrderByReserveDtDesc("test03", pageable);
+
+        List<ReservationResponseDto> dtos = repairReservation.getContent().stream()
+                .map(r -> new ReservationResponseDto(
+                        r.getId(),
+                        r.getCarCenter().getAddress(),
+                        r.getReserveDt(),
+                        r.getCarCenter().getName(),
+                        r.getCarCenter().getTelNo(),
+                        r.getApproveStatus()
+                ))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(dtos, pageable, repairReservation.getTotalElements());
+    }
+
+    public ReservationDetailResponseDto reservationDetail(ReservationDetailRequestDto reservationDto) {
+        RepairReservationEntity repairReservation = repairReservationRepository.findById(reservationDto.getId())
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 게시글입니다."));
+
+        ReservationDetailResponseDto detailResponseDto = ReservationDetailResponseDto.builder()
+                .id(repairReservation.getId())
+                .reserveDt(repairReservation.getReserveDt())
+                .approveStatus(repairReservation.getApproveStatus())
+                .desc(repairReservation.getDesc())
+                .repairDesc(repairReservation.getRepairDesc())
+                .carCenterNm(repairReservation.getCarCenter().getName())
+                .carCenterNum(repairReservation.getCarCenter().getTelNo())
+                .carCenterAddress(repairReservation.getCarCenter().getAddress())
+                .carNm(repairReservation.getCarModel())
+                .carNumber(repairReservation.getCarNumber())
+                .build();
+
+        return detailResponseDto;
     }
 }
