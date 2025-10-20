@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/ownerLayout}">
+<div layout:fragment="ownerContent">
+    <main class="main">
+    <!-- 예약 이력 카드 -->
+    <div class="card">
+        <h2>예약 이력</h2>
+        <table>
+            <colgroup>
+                <col style="width: 30%;">
+                <col style="width: 50%;">
+                <col style="width: 20%;">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>예약일시</th>
+                <th>정비소</th>
+                <th>상태</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="reservation : ${reservationList.content}">
+                <td th:text="${#temporals.format(reservation.reserveDt, 'yyyy-MM-dd a hh:mm')}"></td>
+                <td>
+                    <form th:action="@{/owner/reservation/detail}" method="post" class="form-link">
+                        <!-- body로 보낼 id 값 (화면에는 보이지 않음) -->
+                        <input type="hidden" name="id" th:value="${reservation.id}" />
+
+                        <!-- 링크처럼 보이는 제출 버튼 -->
+                        <button type="submit" class="post-link" th:text="${reservation.carCenterNm}">
+                        </button>
+                    </form>
+                </td>
+                <td>
+
+                 <span class="status-badge"
+                       th:classappend="${#strings.equals(reservation.approveStatus, 'Y')} ? ' status-confirmed' :
+                                       (${#strings.equals(reservation.approveStatus, 'P')} ? ' status-pending' :
+                                       (${#strings.equals(reservation.approveStatus,'N')} ? ' status-rejected' : ''))"
+                       th:text="${#strings.equals(reservation.approveStatus, 'Y')} ? '확정' :
+                               (${#strings.equals(reservation.approveStatus, 'P')} ? '대기' :
+                               (${#strings.equals(reservation.approveStatus, 'N')} ? '거절' : ${reservation.approveStatus}))">
+                </span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="pagination">
+            <ul>
+                <li th:classappend="${reservationList.first} ? 'disabled'">
+                    <a th:href="@{/owner/reservation/history(page=${reservationList.number - 1})}"><</a>
+                </li>
+                <li th:each="i : ${#numbers.sequence(0, reservationList.totalPages - 1)}"
+                    th:classappend="${i == reservationList.number} ? 'active'">
+                    <a th:href="@{/owner/reservation/history(page=${i})}" th:text="${i + 1}"></a>
+                </li>
+                <li th:classappend="${reservationList.last} ? 'disabled'">
+                    <a th:href="@{/owner/reservation/history(page=${reservationList.number + 1})}">></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</main>
+</div>
+
