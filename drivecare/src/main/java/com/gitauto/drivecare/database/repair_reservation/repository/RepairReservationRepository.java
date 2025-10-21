@@ -1,6 +1,6 @@
-package com.gitauto.drivecare.repair_reservation.repository;
+package com.gitauto.drivecare.database.repair_reservation.repository;
 
-import com.gitauto.drivecare.repair_reservation.entity.RepairReservationEntity;
+import com.gitauto.drivecare.database.repair_reservation.entity.RepairReservationEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

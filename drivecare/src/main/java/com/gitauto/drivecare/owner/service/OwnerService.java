@@ -1,14 +1,14 @@
 package com.gitauto.drivecare.owner.service;
 
-import com.gitauto.drivecare.car_center.entity.CarCenterEntity;
-import com.gitauto.drivecare.car_center.repository.CarCenterRepository;
+import com.gitauto.drivecare.database.car_center.entity.CarCenterEntity;
+import com.gitauto.drivecare.database.car_center.repository.CarCenterRepository;
 import com.gitauto.drivecare.owner.dto.*;
 import com.gitauto.drivecare.owner.dto.ReservationDetailRequestDto;
 import com.gitauto.drivecare.owner.dto.ReservationDetailResponseDto;
 import com.gitauto.drivecare.owner.dto.ReservationRequestDto;
 import com.gitauto.drivecare.owner.dto.ReservationResponseDto;
-import com.gitauto.drivecare.repair_reservation.entity.RepairReservationEntity;
-import com.gitauto.drivecare.repair_reservation.repository.RepairReservationRepository;
+import com.gitauto.drivecare.database.repair_reservation.entity.RepairReservationEntity;
+import com.gitauto.drivecare.database.repair_reservation.repository.RepairReservationRepository;
 import com.gitauto.drivecare.user.entity.UserEntity;
 import com.gitauto.drivecare.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -122,5 +122,23 @@ public class OwnerService {
                 .build();
 
         return detailResponseDto;
+    }
+
+    public List<CarCenterResponseDto> getCarCenterList() {
+        List<CarCenterEntity> carCenterEntityList = carCenterRepository.findAllBy();
+
+        List<CarCenterResponseDto> carCenterResponseDtoList = carCenterEntityList.stream()
+                .map(r -> new CarCenterResponseDto(
+                        r.getId(),
+                        r.getName(),
+                        r.getAddress(),
+                        r.getTelNo(),
+                        r.getDesc(),
+                        r.getLatitude(),
+                        r.getLongitude()
+                ))
+                .toList();
+
+        return carCenterResponseDtoList;
     }
 }

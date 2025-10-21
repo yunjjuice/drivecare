@@ -9,7 +9,7 @@ kakao.maps.load(function() {
 
     // 등록 DB 정비소 마커
     $.ajax({
-        url: '/ajax/carcenter/list',
+        url: '/rest-api/owner/car-center/list',
         method: 'GET',
         success: function(data) {
             registeredShops = data;

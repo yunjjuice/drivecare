@@ -1,7 +1,7 @@
-package com.gitauto.drivecare.api.reservation.controller;
+package com.gitauto.drivecare.api.controller;
 
-import com.gitauto.drivecare.api.reservation.dto.ReservationResponseDto;
-import com.gitauto.drivecare.api.reservation.service.ReservationService;
+import com.gitauto.drivecare.api.dto.ReservationResponseDto;
+import com.gitauto.drivecare.api.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

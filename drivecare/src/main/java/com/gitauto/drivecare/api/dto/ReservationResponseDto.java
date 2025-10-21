@@ -1,4 +1,4 @@
-package com.gitauto.drivecare.api.reservation.dto;
+package com.gitauto.drivecare.api.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

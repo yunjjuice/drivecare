@@ -1,8 +1,8 @@
-package com.gitauto.drivecare.api.reservation.service;
+package com.gitauto.drivecare.api.service;
 
-import com.gitauto.drivecare.api.reservation.dto.ReservationResponseDto;
-import com.gitauto.drivecare.repair_reservation.entity.RepairReservationEntity;
-import com.gitauto.drivecare.repair_reservation.repository.RepairReservationRepository;
+import com.gitauto.drivecare.api.dto.ReservationResponseDto;
+import com.gitauto.drivecare.database.repair_reservation.entity.RepairReservationEntity;
+import com.gitauto.drivecare.database.repair_reservation.repository.RepairReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

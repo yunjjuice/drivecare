@@ -1,7 +1,7 @@
-package com.gitauto.drivecare.car_center.controller;
+package com.gitauto.drivecare.owner.controller;
 
-import com.gitauto.drivecare.car_center.dto.CarCenterResponseDto;
-import com.gitauto.drivecare.car_center.service.CarCenterService;
+import com.gitauto.drivecare.owner.dto.CarCenterResponseDto;
+import com.gitauto.drivecare.owner.service.OwnerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,13 +12,13 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/ajax/carcenter")
-public class CarCenterRestController {
+@RequestMapping("/rest-api/owner")
+public class OwnerRestController {
 
-    private final CarCenterService carCenterService;
+    private final OwnerService ownerService;
 
-    @GetMapping("/list")
+    @GetMapping("/car-center/list")
     public ResponseEntity<List<CarCenterResponseDto>> getCarCenterList(){
-        return ResponseEntity.ok().body(carCenterService.getCarCenterList());
+        return ResponseEntity.ok().body(ownerService.getCarCenterList());
     }
 }

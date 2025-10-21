@@ -1,4 +1,4 @@
-package com.gitauto.drivecare.car_center.entity;
+package com.gitauto.drivecare.database.car_center.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,6 +1,6 @@
-package com.gitauto.drivecare.repair_reservation.entity;
+package com.gitauto.drivecare.database.repair_reservation.entity;
 
-import com.gitauto.drivecare.car_center.entity.CarCenterEntity;
+import com.gitauto.drivecare.database.car_center.entity.CarCenterEntity;
 import com.gitauto.drivecare.user.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;

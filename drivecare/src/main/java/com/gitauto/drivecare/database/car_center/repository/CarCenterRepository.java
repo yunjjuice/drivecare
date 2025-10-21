@@ -1,7 +1,7 @@
-package com.gitauto.drivecare.car_center.repository;
+package com.gitauto.drivecare.database.car_center.repository;
 
 
-import com.gitauto.drivecare.car_center.entity.CarCenterEntity;
+import com.gitauto.drivecare.database.car_center.entity.CarCenterEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

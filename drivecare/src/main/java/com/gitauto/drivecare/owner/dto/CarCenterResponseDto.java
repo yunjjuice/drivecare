@@ -1,4 +1,4 @@
-package com.gitauto.drivecare.car_center.dto;
+package com.gitauto.drivecare.owner.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
