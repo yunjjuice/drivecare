@@ -235,10 +235,18 @@ tr:hover td{background:#f3f4f6}
     opacity: 1;
 }
 
-
 /* 포커스 가시성(키보드 사용자) */
 .show-focus *:focus{
     outline:2px solid rgba(37,99,235,.6);
     outline-offset:2px;
     box-shadow:none !important;
+}
+
+.disabled-menu {
+    color: #999 !important;
+    cursor: not-allowed;
+}
+.disabled-menu:hover {
+    color: #aaa !important;
+    text-decoration: none;
 }
