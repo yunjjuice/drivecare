@@ -36,7 +36,7 @@ public class UserController {
             UserEntity user = userService.login(loginRequestDto);
             session.setAttribute("loginUser", user);
             if ("dealer".equals(user.getAuth()) || "admin".equals(user.getAuth())) {
-                return "redirect:/main/dealer";
+                return "redirect:/dealer/dashboard";
             } else if ("user".equals(user.getAuth())) {
                 return "redirect:/main/user";
             } else {

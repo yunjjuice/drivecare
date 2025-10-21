@@ -61,4 +61,7 @@ public class UserEntity {
 
     @Column(name = "DEVICE_ID")
     private String deviceId;
+
+    @Column(name = "CAR_CENTER_ID")
+    private Long carCenterId;
 }

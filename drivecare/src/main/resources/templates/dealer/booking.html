@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/dealerLayout}">
+<th:block layout:fragment="scripts">
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("#bkTable button[data-action]").forEach(btn => {
+      btn.addEventListener("click", function () {
+        const action = this.getAttribute("data-action");
+        const id = this.getAttribute("data-id");
+
+        const status = action == "approve" ? 'Y' : 'N';
+
+        fetch(`/api/dealer/booking/${id}/status`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({approveStatus: status})
+        }).then(res => {
+            if (!res.ok) throw new Error("서버 오류 발생");
+            return res.json();
+        }).then(data => {
+          showToast("처리되었습니다.");
+
+          const row = this.closest("tr");
+          const badge = row.querySelector(".badge");
+          badge.textContent = data.approveStatusName;
+          badge.className = "badge";
+          if (data.approveStatus.toString() == 'Y') badge.classList.add("ok");
+          else if (data.approveStatus.toString() == 'N') badge.classList.add("danger");
+        }).catch(err => {
+          showToast("처리에 실패했습니다.");
+          console.error(err);
+        })
+      })
+    })
+  });
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 2000);
+  }
+</script>
+</th:block>
+
+<div layout:fragment="dealerContent">
+  <main class="main">
+    <header class="top">
+      <span class="chip">예약 관리</span>
+      <div class="spacer"></div>
+      <div class="user">
+        <div class="avatar" aria-hidden="true"></div>
+        <div>
+          <b th:text="${loginUser.name}"></b><br/>
+          <small class="muted" th:text="${loginUser.email}"></small>
+        </div>
+      </div>
+    </header>
+
+    <section class="section active" id="booking">
+      <div class="card">
+        <h3>예약 목록</h3>
+        <div class="row">
+          <div class="two" style="flex:1">
+            <div>
+              <label>검색</label>
+              <input type="text" id="bkSearch" placeholder="고객/차량/연락처"/>
+            </div>
+            <div>
+              <label>상태</label>
+              <select id="bkStatus">
+                <option value="">전체</option>
+                <option value="new">대기</option>
+                <option value="approved">승인</option>
+                <option value="canceled">취소</option>
+                <option value="done">완료</option>
+              </select>
+            </div>
+          </div>
+          <div class="actions" style="align-self:end">
+            <button class="btn" id="bkFilter">필터</button>
+          </div>
+        </div>
+        <table id="bkTable" style="margin-top:10px">
+          <thead>
+          <tr>
+            <th>일시</th>
+            <th>고객</th>
+            <th>차량</th>
+            <th>서비스</th>
+            <th>상태</th>
+            <th>연락처</th>
+            <th>비고</th>
+            <th>승인/취소</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="booking : ${bookings}">
+            <td th:text="${#temporals.format(booking.reserveDt, 'yyyy년 MM월 dd일 a HH:mm', T(java.util.Locale).KOREA)}"></td>
+            <td th:text="${booking.name}"></td>
+            <td th:text="${booking.carModel}"></td>
+            <td th:text="${booking.desc}"></td>
+            <td>
+              <span class="badge"
+                    th:classappend="${booking.approveStatus.toString() == 'Y' ? ' ok' :
+                         (booking.approveStatus.toString() == 'N' ? ' danger' : '')}"
+                      th:text="${booking.approveStatusName}">
+              </span>
+            </td>
+            <td th:text="${booking.telNo}"></td>
+            <td></td>
+            <td>
+              <button class="btn primary" data-action="approve" th:data-id="${booking.id}">승인</button>
+              <button class="btn danger" data-action="cancel" th:data-id="${booking.id}">취소</button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <div class="toast" id="toast">처리되었습니다.</div>
+  </main>
+</div>
+</html>
