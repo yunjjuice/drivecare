@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/ownerLayout}">
+<div layout:fragment="ownerContent">
+<main class="main">
+    <!-- 상단 카드 -->
+    <div class="card vehicle-top">
+        <div class="left-column">
+            <!-- 차량 이미지 + 정보 -->
+            <div class="vehicle-main">
+                <div class="vehicle-img-container">
+                    <img style="transform: scale(2);" src="/images/car1.png" alt="차량 이미지">
+                </div>
+                <div class="vehicle-info">
+                    <h2>홍길동님, 안전 운전하세요 🚗</h2>
+<!--                    <p>Model: <strong>현대 아반떼 2021</strong></p>-->
+<!--                    <p>Number: <strong>12가 3456</strong></p>-->
+<!--                    <p>Odometer: <strong>35,200 km</strong></p>-->
+                </div>
+            </div>
+            <!-- 차량 건강진단 -->
+            <div class="vehicle-health">
+                <div class="health-item">
+                    <h4>브레이크</h4>
+                    <div class="progress-bar"><span class="progress-brake" style="width:90%">90%</span></div>
+                </div>
+                <div class="health-item">
+                    <h4>타이어</h4>
+                    <div class="progress-bar"><span class="progress-tire" style="width:70%">70%</span></div>
+                </div>
+                <div class="health-item">
+                    <h4>엔진 오일</h4>
+                    <div class="progress-bar"><span class="progress-oil" style="width:60%">60%</span></div>
+                </div>
+                <div class="health-item">
+                    <h4>배터리</h4>
+                    <div class="progress-bar"><span class="progress-battery" style="width:80%">80%</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 안전운전 점수: 오른쪽 전체 높이 -->
+        <div class="score-column">
+            <div class="score-circle">
+                <h3>안전 운전 점수</h3>
+                <svg width="120" height="120">
+                    <circle cx="60" cy="60" r="54" stroke="#e0e0e0" stroke-width="12" fill="none"/>
+                    <circle cx="60" cy="60" r="54" stroke="#4f46e5" stroke-width="12" fill="none"
+                            stroke-dasharray="339.292"
+                            stroke-dashoffset="43.906"
+                            stroke-linecap="round"
+                            transform="rotate(-90 60 60)"/>
+                    <text x="60" y="68" text-anchor="middle" font-size="20" fill="#333" font-weight="bold">87</text>
+                </svg>
+                <p style="margin-top:5px; color:#48bb78; font-weight:bold;">지난달 대비 4점 ▲</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 예약 현황 카드 -->
+    <div class="card">
+        <h2>정비소 예약 현황</h2>
+        <table>
+            <colgroup>
+                <col style="width: 30%;">
+                <col style="width: 50%;">
+                <col style="width: 20%;">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>예약일시</th>
+                <th>정비소</th>
+                <th>상태</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="reservation : ${main.reservationList}">
+                <td th:text="${#temporals.format(reservation.reserveDt, 'yyyy-MM-dd a hh:mm')}"></td>
+                <td>
+                    <form th:action="@{/owner/reservation/detail}" method="post" class="form-link">
+                        <input type="hidden" name="id" th:value="${reservation.id}" />
+                        <button type="submit" class="post-link" th:text="${reservation.carCenterNm}"></button>
+                    </form>
+                </td>
+                <td>
+                <span class="status-badge"
+                      th:classappend="${#strings.equals(reservation.approveStatus, 'Y')} ? ' status-confirmed' :
+                                           (${#strings.equals(reservation.approveStatus, 'P')} ? ' status-pending' :
+                                           (${#strings.equals(reservation.approveStatus,'N')} ? ' status-rejected' : ''))"
+                      th:text="${#strings.equals(reservation.approveStatus, 'Y')} ? '확정' :
+                                   (${#strings.equals(reservation.approveStatus, 'P')} ? '대기' :
+                                   (${#strings.equals(reservation.approveStatus, 'N')} ? '거절' : ${reservation.approveStatus}))">
+                    </span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</div>

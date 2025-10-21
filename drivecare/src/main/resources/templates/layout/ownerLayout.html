@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <link rel="stylesheet" th:href="@{/css/owner/owner-style.css}">
+    <script th:src="@{/js/owner/owner-common.js}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta charset="UTF-8">
+    <title>GIT Drivecar+</title>
+</head>
+<body>
+<div class="app">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-logo" aria-hidden="true"></div>
+            <div>
+                <b>유저</b><br/>
+                <span class="muted" style="font-size:12px">User Console</span>
+            </div>
+        </div>
+
+        <nav class="nav">
+            <ul>
+                <li>
+                    <a th:href="@{/owner}"
+                       th:classappend="${currentPath == '/owner'} ? 'active'">
+                        🏠 대시보드
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/owner/reservation}"
+                       th:classappend="${currentPath == '/owner/reservation'} ? 'active'">
+                        🏷️ 정비소 예약 하기
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/owner/reservation/history}"
+                       th:classappend="${currentPath == '/owner/reservation/history'} ? 'active'">
+                        🏷️ 정비소 예약 목록
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="foot">v1.0 · 로컬 데모 UI</div>
+    </aside>
+
+    <!-- 우측 메인 컨텐츠 -->
+    <section layout:fragment="ownerContent"></section>
+</div>
+<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=3e70a3ac992cb619ac796a67b4f61b2d&autoload=false"></script>
+<script th:src="@{/js/owner/owner-common.js}"></script>
+<script th:src="@{/js/owner/owner-map.js}"></script>
+
+</body>
+</html>
