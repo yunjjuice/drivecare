@@ -10,13 +10,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface RepairReservationRepository extends JpaRepository<RepairReservationEntity, Long> {
-    List<RepairReservationEntity> findByReserveDtAfterOrderByReserveDt(LocalDateTime now);
+    List<RepairReservationEntity> findByUserInfo_UserIdAndReserveDtAfterOrderByReserveDt(String userId, LocalDateTime now);
 
     Page<RepairReservationEntity> findAllByUserInfo_UserIdOrderByReserveDtDesc(String userId, Pageable pageable);
 
     List<RepairReservationEntity> findAllByUserInfo_UserIdOrderByReserveDtDesc(String userId);
 
-    List<RepairReservationEntity> findByReserveDtAfterAndUserInfo_UserId(LocalDateTime now, String userId);
+    List<RepairReservationEntity> findByUserInfo_UserIdAndReserveDtAfter(String userId, LocalDateTime now);
 
     @EntityGraph(attributePaths = {"userInfo"})
     List<RepairReservationEntity> findByCarCenter_Id(Long carCenterId);

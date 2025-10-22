@@ -27,7 +27,11 @@ public class ReservationService {
                         r.getReserveDt(),
                         r.getCarCenter().getName(),
                         r.getCarCenter().getTelNo(),
-                        r.getApproveStatus()
+                        r.getApproveStatus(),
+                        r.getDesc(),
+                        r.getCarModel(),
+                        r.getCarNumber(),
+                        r.getRepairDesc()
                 ))
                 .collect(Collectors.toList());
 

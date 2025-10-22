@@ -39,7 +39,7 @@ public class UserController {
             if ("dealer".equals(user.getAuth()) || "admin".equals(user.getAuth())) {
                 return "redirect:/dealer/dashboard";
             } else if ("user".equals(user.getAuth())) {
-                return "redirect:/main/user";
+                return "redirect:/owner/dashboard";
             } else {
                 model.addAttribute("errorMessage", "알 수 없는 권한입니다.");
                 return "user/login";
