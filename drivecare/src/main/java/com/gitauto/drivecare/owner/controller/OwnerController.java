@@ -1,5 +1,6 @@
 package com.gitauto.drivecare.owner.controller;
 
+import com.gitauto.drivecare.database.user_info.entity.UserInfoEntity;
 import com.gitauto.drivecare.owner.dto.MainResponseDto;
 import com.gitauto.drivecare.owner.dto.ReservationDetailRequestDto;
 import com.gitauto.drivecare.owner.dto.ReservationRequestDto;
@@ -8,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -20,12 +18,12 @@ public class OwnerController {
 
     private final OwnerService ownerService;
 
-    @GetMapping
-    public String userMain(Model model) {
-        MainResponseDto mainResponseDto = ownerService.repairMain();
+    @GetMapping("/dashboard")
+    public String userMain(@SessionAttribute("loginUser") UserInfoEntity loginUser, Model model) {
+        MainResponseDto mainResponseDto = ownerService.repairMain(loginUser.getUserId());
         model.addAttribute("main", mainResponseDto);
 
-        return "owner/main";
+        return "owner/dashboard";
     }
 
     @GetMapping("/reservation")
@@ -34,22 +32,23 @@ public class OwnerController {
     }
 
     @PostMapping("/reservation/create")
-    public String userReservation(@ModelAttribute ReservationRequestDto reservationDto) {
-        ownerService.reservation(reservationDto);
+    public String userReservation(@SessionAttribute("loginUser") UserInfoEntity loginUser, @ModelAttribute ReservationRequestDto reservationDto) {
+        ownerService.reservation(loginUser.getUserId(), reservationDto);
 
-        return "redirect:/owner";
+        return "redirect:/owner/dashboard";
     }
 
     @GetMapping("/reservation/history")
-    public String userReservationHistory(Pageable pageable, Model model) {
-        model.addAttribute("reservationList", ownerService.reservationHistory(pageable));
+    public String userReservationHistory(@SessionAttribute("loginUser") UserInfoEntity loginUser, Pageable pageable, Model model) {
+        model.addAttribute("reservationList", ownerService.reservationHistory(loginUser.getUserId(), pageable));
 
         return "owner/reservation-history";
     }
 
     @PostMapping("/reservation/detail")
-    public String userReservationDetail(@ModelAttribute ReservationDetailRequestDto reservationDto, Model model) {
-        model.addAttribute("reservationDetail", ownerService.reservationDetail(reservationDto));
+    public String userReservationDetail(@SessionAttribute("loginUser") UserInfoEntity loginUser,
+                                        @ModelAttribute ReservationDetailRequestDto reservationDto, Model model) {
+        model.addAttribute("reservationDetail", ownerService.reservationDetail(loginUser.getUserId(), reservationDto));
 
         return "owner/reservation-detail";
     }

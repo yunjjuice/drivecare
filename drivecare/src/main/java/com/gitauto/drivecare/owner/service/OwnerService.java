@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,11 +33,12 @@ public class OwnerService {
     private final CarCenterRepository carCenterRepository;
     private final UserInfoRepository userInfoRepository;
 
-    public MainResponseDto repairMain() {
+    public MainResponseDto repairMain(String userId) {
         // 자동차 정보
         // 운전데이터 (운전점수)
+        userInfoRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
 
-        List<RepairReservationEntity> reservationList = repairReservationRepository.findByReserveDtAfterOrderByReserveDt(LocalDateTime.now());
+        List<RepairReservationEntity> reservationList = repairReservationRepository.findByUserInfo_UserIdAndReserveDtAfterOrderByReserveDt(userId, LocalDateTime.now());
 
         MainResponseDto mainResponseDto = MainResponseDto.builder()
                 .reservationList(reservationList.stream()
@@ -47,9 +49,9 @@ public class OwnerService {
         return mainResponseDto;
     }
 
-    public void reservation(ReservationRequestDto reservationDto) {
+    public void reservation(String userId, ReservationRequestDto reservationDto) {
         CarCenterEntity carCenter = carCenterRepository.findById(reservationDto.getCarCenterId()).orElseThrow(() -> new RuntimeException("존재하지 않는 카센터입니다."));
-        UserInfoEntity user = userInfoRepository.findById(3L).orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다.")); //임시 삽입
+        UserInfoEntity user = userInfoRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
 
         RepairReservationEntity repairReservation = new RepairReservationEntity(
                 null,
@@ -69,8 +71,9 @@ public class OwnerService {
         repairReservationRepository.save(repairReservation);
     }
 
-    public List<ReservationResponseDto> getUpcomingReservationList() {
-        List<RepairReservationEntity> reservationList = repairReservationRepository.findByReserveDtAfterAndUserInfo_UserId(LocalDateTime.now(ZoneOffset.UTC), "test03");
+    public List<ReservationResponseDto> getUpcomingReservationList(String userId) {
+        userInfoRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
+        List<RepairReservationEntity> reservationList = repairReservationRepository.findByUserInfo_UserIdAndReserveDtAfter(userId, LocalDateTime.now(ZoneOffset.UTC));
 
         List<ReservationResponseDto> reservationResponseList = reservationList.stream()
                 .map(r -> new ReservationResponseDto(
@@ -87,8 +90,10 @@ public class OwnerService {
     }
 
 
-    public Page<ReservationResponseDto> reservationHistory(Pageable pageable) {
-        Page<RepairReservationEntity> repairReservation = repairReservationRepository.findAllByUserInfo_UserIdOrderByReserveDtDesc("test03", pageable);
+    public Page<ReservationResponseDto> reservationHistory(String userId, Pageable pageable) {
+        UserInfoEntity user = userInfoRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
+
+        Page<RepairReservationEntity> repairReservation = repairReservationRepository.findAllByUserInfo_UserIdOrderByReserveDtDesc(user.getUserId(), pageable);
 
         List<ReservationResponseDto> dtos = repairReservation.getContent().stream()
                 .map(r -> new ReservationResponseDto(
@@ -104,9 +109,14 @@ public class OwnerService {
         return new PageImpl<>(dtos, pageable, repairReservation.getTotalElements());
     }
 
-    public ReservationDetailResponseDto reservationDetail(ReservationDetailRequestDto reservationDto) {
+    public ReservationDetailResponseDto reservationDetail(String userId, ReservationDetailRequestDto reservationDto) {
+        UserInfoEntity user = userInfoRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
         RepairReservationEntity repairReservation = repairReservationRepository.findById(reservationDto.getId())
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 게시글입니다."));
+
+        if(!Objects.equals(user.getId(), repairReservation.getUserInfo().getId())) {
+            throw new RuntimeException("해당 게시글에 대한 권한이 없습니다");
+        }
 
         ReservationDetailResponseDto detailResponseDto = ReservationDetailResponseDto.builder()
                 .id(repairReservation.getId())
