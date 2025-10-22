@@ -9,8 +9,8 @@ import com.gitauto.drivecare.owner.dto.ReservationRequestDto;
 import com.gitauto.drivecare.owner.dto.ReservationResponseDto;
 import com.gitauto.drivecare.database.repair_reservation.entity.RepairReservationEntity;
 import com.gitauto.drivecare.database.repair_reservation.repository.RepairReservationRepository;
-import com.gitauto.drivecare.user.entity.UserEntity;
-import com.gitauto.drivecare.user.repository.UserRepository;
+import com.gitauto.drivecare.database.user_info.entity.UserInfoEntity;
+import com.gitauto.drivecare.database.user_info.repository.UserInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -30,7 +30,7 @@ public class OwnerService {
 
     private final RepairReservationRepository repairReservationRepository;
     private final CarCenterRepository carCenterRepository;
-    private final UserRepository userRepository;
+    private final UserInfoRepository userInfoRepository;
 
     public MainResponseDto repairMain() {
         // 자동차 정보
@@ -49,7 +49,7 @@ public class OwnerService {
 
     public void reservation(ReservationRequestDto reservationDto) {
         CarCenterEntity carCenter = carCenterRepository.findById(reservationDto.getCarCenterId()).orElseThrow(() -> new RuntimeException("존재하지 않는 카센터입니다."));
-        UserEntity user = userRepository.findById(3L).orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다.")); //임시 삽입
+        UserInfoEntity user = userInfoRepository.findById(3L).orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다.")); //임시 삽입
 
         RepairReservationEntity repairReservation = new RepairReservationEntity(
                 null,
@@ -70,7 +70,7 @@ public class OwnerService {
     }
 
     public List<ReservationResponseDto> getUpcomingReservationList() {
-        List<RepairReservationEntity> reservationList = repairReservationRepository.findByReserveDtAfterAndUser_UserId(LocalDateTime.now(ZoneOffset.UTC), "test03");
+        List<RepairReservationEntity> reservationList = repairReservationRepository.findByReserveDtAfterAndUserInfo_UserId(LocalDateTime.now(ZoneOffset.UTC), "test03");
 
         List<ReservationResponseDto> reservationResponseList = reservationList.stream()
                 .map(r -> new ReservationResponseDto(
@@ -88,7 +88,7 @@ public class OwnerService {
 
 
     public Page<ReservationResponseDto> reservationHistory(Pageable pageable) {
-        Page<RepairReservationEntity> repairReservation = repairReservationRepository.findAllByUser_UserIdOrderByReserveDtDesc("test03", pageable);
+        Page<RepairReservationEntity> repairReservation = repairReservationRepository.findAllByUserInfo_UserIdOrderByReserveDtDesc("test03", pageable);
 
         List<ReservationResponseDto> dtos = repairReservation.getContent().stream()
                 .map(r -> new ReservationResponseDto(

@@ -2,8 +2,8 @@ package com.gitauto.drivecare.user.service;
 
 import com.gitauto.drivecare.user.dto.LoginRequestDto;
 import com.gitauto.drivecare.user.dto.RegisterRequestDto;
-import com.gitauto.drivecare.user.entity.UserEntity;
-import com.gitauto.drivecare.user.repository.UserRepository;
+import com.gitauto.drivecare.database.user_info.entity.UserInfoEntity;
+import com.gitauto.drivecare.database.user_info.repository.UserInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final UserInfoRepository userInfoRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final PasswordEncoder passwordEncoder;
 
-    public UserEntity login(LoginRequestDto dto) {
-        UserEntity user = userRepository.findByUserId(dto.getUserId())
+    public UserInfoEntity login(LoginRequestDto dto) {
+        UserInfoEntity user = userInfoRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디입니다."));
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
@@ -29,12 +29,12 @@ public class UserService {
     }
 
     public boolean checkUserIdDuplicate(String userId) {
-        return userRepository.existsByUserId(userId);
+        return userInfoRepository.existsByUserId(userId);
     }
 
     public void register(RegisterRequestDto dto) {
         // id 중복체크
-        if (userRepository.existsByUserId(dto.getUserId())) {
+        if (userInfoRepository.existsByUserId(dto.getUserId())) {
             throw new IllegalStateException("이미 사용 중인 아이디입니다.");
         }
 
@@ -47,7 +47,7 @@ public class UserService {
         String encodedPassword = passwordEncoder.encode(dto.getPassword());
 
         // 엔터티 생성
-        UserEntity user = UserEntity.builder()
+        UserInfoEntity user = UserInfoEntity.builder()
                 .userId(dto.getUserId())
                 .password(encodedPassword)
                 .email(dto.getEmail())
@@ -55,6 +55,6 @@ public class UserService {
                 .auth(dto.getAuth())
                 .build();
 
-        userRepository.save(user);
+        userInfoRepository.save(user);
     }
 }

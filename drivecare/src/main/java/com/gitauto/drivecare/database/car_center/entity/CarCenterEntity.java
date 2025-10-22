@@ -1,14 +1,12 @@
 package com.gitauto.drivecare.database.car_center.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "CAR_CENTER")
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,4 +32,7 @@ public class CarCenterEntity {
 
     @Column(name = "LONGITUDE")
     private Double longitude;
+
+    @Column(name = "EMAIL")
+    private String email;
 }

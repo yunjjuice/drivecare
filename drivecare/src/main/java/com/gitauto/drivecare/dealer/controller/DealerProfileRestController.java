@@ -1,9 +1,9 @@
 package com.gitauto.drivecare.dealer.controller;
 
+import com.gitauto.drivecare.database.car_center.entity.CarCenterEntity;
 import com.gitauto.drivecare.dealer.dto.DealerProfileDto;
-import com.gitauto.drivecare.dealer.entity.CarCenterEntity;
 import com.gitauto.drivecare.dealer.service.DealerProfileService;
-import com.gitauto.drivecare.user.entity.UserEntity;
+import com.gitauto.drivecare.database.user_info.entity.UserInfoEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +15,8 @@ public class DealerProfileRestController {
 
     private final DealerProfileService service;
 
-    @PostMapping("/api/dealer/profile")
-    public ResponseEntity<?> updateCarCenterInfo(@RequestBody DealerProfileDto dto, @SessionAttribute("loginUser") UserEntity loginUser) {
+    @PostMapping("/rest-api/dealer/profile")
+    public ResponseEntity<?> updateCarCenterInfo(@RequestBody DealerProfileDto dto, @SessionAttribute("loginUser") UserInfoEntity loginUser) {
         try {
             CarCenterEntity savedEntity = service.updateCarCenterInfo(dto);
             service.updateUserCarCenterInfo(loginUser.getId(), savedEntity.getId());

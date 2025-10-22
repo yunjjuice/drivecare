@@ -12,7 +12,7 @@
 
         const status = action == "approve" ? 'Y' : 'N';
 
-        fetch(`/api/dealer/booking/${id}/status`, {
+        fetch(`/rest-api/dealer/booking/${id}/status`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'

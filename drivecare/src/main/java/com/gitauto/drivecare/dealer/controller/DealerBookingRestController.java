@@ -15,7 +15,7 @@ public class DealerBookingRestController {
 
     private final DealerBookingService service;
 
-    @PutMapping("/api/dealer/booking/{reservationId}/status")
+    @PutMapping("/rest-api/dealer/booking/{reservationId}/status")
     public ResponseEntity<?> updateBookingStatus(@PathVariable Long reservationId, @RequestBody Map<String, String> requestBody) {
         try {
             String approveStatusStr = requestBody.get("approveStatus");

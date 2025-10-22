@@ -2,7 +2,7 @@ package com.gitauto.drivecare.dealer.controller;
 
 import com.gitauto.drivecare.dealer.dto.ReservationDto;
 import com.gitauto.drivecare.dealer.service.DealerBookingService;
-import com.gitauto.drivecare.user.entity.UserEntity;
+import com.gitauto.drivecare.database.user_info.entity.UserInfoEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +20,7 @@ public class DealerBookingController {
     private final DealerBookingService service;
 
     @GetMapping("/dealer/booking")
-    public String viewDashboard(@SessionAttribute("loginUser") UserEntity loginUser, Model model) {
+    public String viewDashboard(@SessionAttribute("loginUser") UserInfoEntity loginUser, Model model) {
         List<ReservationDto> reservationList = service.getBookings(loginUser.getCarCenterId());
         model.addAttribute("bookings", reservationList);
         return "dealer/booking";

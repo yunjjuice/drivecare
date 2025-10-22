@@ -1,7 +1,7 @@
 package com.gitauto.drivecare.database.repair_reservation.entity;
 
 import com.gitauto.drivecare.database.car_center.entity.CarCenterEntity;
-import com.gitauto.drivecare.user.entity.UserEntity;
+import com.gitauto.drivecare.database.user_info.entity.UserInfoEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "REPAIR_RESERVATION")
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,7 +23,7 @@ public class RepairReservationEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID", nullable = false)
-    private UserEntity user;
+    private UserInfoEntity userInfo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CAR_CENTER_ID", nullable = false)

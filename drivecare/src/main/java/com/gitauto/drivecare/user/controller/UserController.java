@@ -2,7 +2,7 @@ package com.gitauto.drivecare.user.controller;
 
 import com.gitauto.drivecare.user.dto.LoginRequestDto;
 import com.gitauto.drivecare.user.dto.RegisterRequestDto;
-import com.gitauto.drivecare.user.entity.UserEntity;
+import com.gitauto.drivecare.database.user_info.entity.UserInfoEntity;
 import com.gitauto.drivecare.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ public class UserController {
     @PostMapping("/login")
     public String login(@ModelAttribute LoginRequestDto loginRequestDto, HttpSession session, Model model) {
         try {
-            UserEntity user = userService.login(loginRequestDto);
+            UserInfoEntity user = userService.login(loginRequestDto);
             session.setAttribute("loginUser", user);
             if ("dealer".equals(user.getAuth()) || "admin".equals(user.getAuth())) {
                 return "redirect:/dealer/dashboard";

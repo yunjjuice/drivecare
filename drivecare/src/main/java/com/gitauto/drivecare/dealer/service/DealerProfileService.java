@@ -1,9 +1,10 @@
 package com.gitauto.drivecare.dealer.service;
 
+import com.gitauto.drivecare.database.car_center.entity.CarCenterEntity;
+import com.gitauto.drivecare.database.car_center.repository.CarCenterRepository;
+import com.gitauto.drivecare.database.user_info.entity.UserInfoEntity;
 import com.gitauto.drivecare.dealer.dto.DealerProfileDto;
-import com.gitauto.drivecare.dealer.entity.CarCenterEntity;
-import com.gitauto.drivecare.dealer.repository.CarCenterRepository;
-import com.gitauto.drivecare.user.repository.UserRepository;
+import com.gitauto.drivecare.database.user_info.repository.UserInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +14,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DealerProfileService {
 
-    private final UserRepository userRepository;
+    private final UserInfoRepository userInfoRepository;
     private final CarCenterRepository carCenterrepository;
 
     public CarCenterEntity getCarCenterInfoByUserId(String userId) {
-        Optional<Long> carCenterId =  userRepository.findCarCenterIdByUserId(userId);
+        Optional<Long> carCenterId = userInfoRepository.findByUserId(userId)
+                .map(UserInfoEntity::getCarCenterId);
 
         if (carCenterId.isPresent()) {
             return carCenterrepository.findById(carCenterId.get()).orElse(new CarCenterEntity());
@@ -42,6 +44,6 @@ public class DealerProfileService {
     }
 
     public void updateUserCarCenterInfo(long userId, long carCenterId) {
-        userRepository.updateCarCenterIdById(userId, carCenterId);
+        userInfoRepository.updateCarCenterIdById(userId, carCenterId);
     }
 }

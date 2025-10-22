@@ -1,6 +1,6 @@
-package com.gitauto.drivecare.user.repository;
+package com.gitauto.drivecare.database.user_info.repository;
 
-import com.gitauto.drivecare.user.entity.UserEntity;
+import com.gitauto.drivecare.database.user_info.entity.UserInfoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -10,15 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserEntity, Long> {
-    Optional<UserEntity> findByUserId(String userId);
+public interface UserInfoRepository extends JpaRepository<UserInfoEntity, Long> {
+    Optional<UserInfoEntity> findByUserId(String userId);
     boolean existsByUserId(String userId);
-
-    @Query("SELECT u.carCenterId FROM UserEntity u WHERE u.userId = :userId")
-    Optional<Long> findCarCenterIdByUserId(String userId);
 
     @Transactional
     @Modifying
-    @Query("UPDATE UserEntity u SET u.carCenterId = :carCenterId WHERE u.id = :id")
+    @Query("UPDATE UserInfoEntity u SET u.carCenterId = :carCenterId WHERE u.id = :id")
     int updateCarCenterIdById(long id, long carCenterId);
 }
