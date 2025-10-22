@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@SessionAttributes("loginUser")
 @RequiredArgsConstructor
 public class DealerBookingRestController {
 

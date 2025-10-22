@@ -9,7 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@SessionAttributes("loginUser")
 @RequiredArgsConstructor
 public class DealerProfileController {
 

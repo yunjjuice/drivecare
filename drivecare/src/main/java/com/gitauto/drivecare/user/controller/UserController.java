@@ -35,6 +35,7 @@ public class UserController {
         try {
             UserInfoEntity user = userService.login(loginRequestDto);
             session.setAttribute("loginUser", user);
+            session.setMaxInactiveInterval(60 * 60 * 6);
             if ("dealer".equals(user.getAuth()) || "admin".equals(user.getAuth())) {
                 return "redirect:/dealer/dashboard";
             } else if ("user".equals(user.getAuth())) {
