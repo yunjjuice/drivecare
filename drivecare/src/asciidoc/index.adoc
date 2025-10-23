@@ -12,4 +12,10 @@ include::{snippets}/test-doc/request-fields.adoc[]
 include::{snippets}/test-doc/http-response.adoc[]
 include::{snippets}/test-doc/response-fields.adoc[]
 
-test
+== 정비 리스트 조회
+
+=== Request
+include::{snippets}/reservation/list/http-request.adoc[]
+=== Response
+include::{snippets}/reservation/list/http-response.adoc[]
+include::{snippets}/reservation/list/response-fields.adoc[]

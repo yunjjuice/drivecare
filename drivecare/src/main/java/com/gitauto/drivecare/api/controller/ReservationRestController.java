@@ -19,7 +19,7 @@ public class ReservationRestController {
 
     @GetMapping("/list")
     public ResponseEntity<List<ReservationResponseDto>> getReservationList() {
+        // TODO : 로그인 토큰 생기면 토큰 이용하여 해당 유저 데이터만 조회할 수 있도록 변경 필요
         return ResponseEntity.ok().body(reservationApiService.reservationList());
     }
-
 }
