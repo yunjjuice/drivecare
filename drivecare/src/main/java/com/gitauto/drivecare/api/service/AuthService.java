@@ -48,4 +48,48 @@ public class AuthService {
                 .refreshTokenExpiresIn(jwtTokenProvider.getRefreshTokenExpirationSeconds())
                 .build();
     }
+
+    public TokenResponseDto refresh(String refreshToken) {
+        RefreshTokenEntity entity = refreshTokenRepository.findByTokenAndRevoked(refreshToken, 'N')
+                .orElseThrow(() -> new ApiException(ErrorCode.UNAUTHORIZED, "리프레시 토큰 없음/만료"));
+
+        String subject = jwtTokenProvider.getSubject(refreshToken);
+
+        if (!entity.getUser().getUserId().equals(subject)) {
+            throw new ApiException(ErrorCode.UNAUTHORIZED, "토큰 사용자 불일치");
+        }
+
+        if (entity.getExpiresAt() != null && entity.getExpiresAt().isBefore(LocalDateTime.now())) {
+            entity.setRevoked('Y');
+            refreshTokenRepository.save(entity);
+            throw new ApiException(ErrorCode.UNAUTHORIZED, "리프레시 토큰 만료");
+        }
+
+        UserInfoEntity user = entity.getUser();
+
+        // access token 재발급
+        String newAccessToken = jwtTokenProvider.generateAccessToken(
+                user.getUserId(),
+                Map.of("uid", user.getId(), "role", user.getAuth()));
+
+        // 전달받은 refresh 비활성화 후 refresh token 재발급
+        entity.setRevoked('Y');
+        refreshTokenRepository.save(entity);
+
+        String newRefreshToken = jwtTokenProvider.generateRefreshToken(user.getUserId());
+        RefreshTokenEntity newEntity = RefreshTokenEntity.builder()
+                .user(user)
+                .token(newRefreshToken)
+                .expiresAt(LocalDateTime.now().plusSeconds(jwtTokenProvider.getRefreshTokenExpirationSeconds()))
+                .revoked('N')
+                .build();
+        refreshTokenRepository.save(newEntity);
+
+        return TokenResponseDto.builder()
+                .accessToken(newAccessToken)
+                .refreshToken(newRefreshToken)
+                .accessTokenExpiresIn(jwtTokenProvider.getAccessTokenExpirationSeconds())
+                .refreshTokenExpiresIn(jwtTokenProvider.getRefreshTokenExpirationSeconds())
+                .build();
+    }
 }

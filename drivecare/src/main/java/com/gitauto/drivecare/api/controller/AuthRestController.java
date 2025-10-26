@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
@@ -21,5 +23,10 @@ public class AuthRestController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<TokenResponseDto>> login(@RequestBody UserInfoEntity userInfo) {
         return ResponseEntity.ok(ApiResponse.ok(authService.login(userInfo.getUserId(), userInfo.getPassword())));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<TokenResponseDto>> refresh(@RequestBody Map<String, Object> request) {
+        return ResponseEntity.ok(ApiResponse.ok(authService.refresh(request.get("refreshToken").toString())));
     }
 }
