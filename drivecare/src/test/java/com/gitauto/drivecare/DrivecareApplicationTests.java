@@ -1,7 +1,9 @@
 package com.gitauto.drivecare;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gitauto.drivecare.api.TestController;
 import com.gitauto.drivecare.api.TestDto;
+import com.gitauto.drivecare.security.JwtAuthenticationFilter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -20,8 +24,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest
-@AutoConfigureMockMvc
+@WebMvcTest(controllers = TestController.class,
+        excludeFilters = @ComponentScan.Filter(
+                type = FilterType.ASSIGNABLE_TYPE,
+                value = JwtAuthenticationFilter.class)
+)
+@AutoConfigureMockMvc(addFilters = false)
 @AutoConfigureRestDocs
 class DrivecareApplicationTests {
 

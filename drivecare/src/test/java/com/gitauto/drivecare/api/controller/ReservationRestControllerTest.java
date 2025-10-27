@@ -3,12 +3,16 @@ package com.gitauto.drivecare.api.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gitauto.drivecare.api.dto.ReservationResponseDto;
 import com.gitauto.drivecare.api.service.ReservationService;
+import com.gitauto.drivecare.config.SecurityConfig;
+import com.gitauto.drivecare.security.JwtAuthenticationFilter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,8 +32,14 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ReservationRestController.class)
-@AutoConfigureMockMvc
+@WebMvcTest(
+        controllers = ReservationRestController.class,
+        excludeFilters = {
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = JwtAuthenticationFilter.class),
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = SecurityConfig.class)
+        }
+)
+@AutoConfigureMockMvc(addFilters = false)
 @AutoConfigureRestDocs
 class ReservationRestControllerTest {
 
