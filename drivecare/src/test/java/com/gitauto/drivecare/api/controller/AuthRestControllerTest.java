@@ -27,6 +27,7 @@ import java.util.Map;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -79,7 +80,34 @@ class AuthRestControllerTest {
         // then
         result.andDo(document("auth-login",
                         preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())))
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("userId").description("사용자 ID"),
+                                fieldWithPath("password").ignored(),
+                                fieldWithPath("id").ignored(),
+                                fieldWithPath("name").ignored(),
+                                fieldWithPath("email").ignored(),
+                                fieldWithPath("telNo").ignored(),
+                                fieldWithPath("auth").ignored(),
+                                fieldWithPath("creDt").ignored(),
+                                fieldWithPath("uptDt").ignored(),
+                                fieldWithPath("delDt").ignored(),
+                                fieldWithPath("userStatus").ignored(),
+                                fieldWithPath("pwAltrDt").ignored(),
+                                fieldWithPath("pwErrCnt").ignored(),
+                                fieldWithPath("deviceId").ignored(),
+                                fieldWithPath("carCenterId").ignored()
+                        ),
+                        responseFields(
+                                fieldWithPath("success").description("요청 성공 여부"),
+                                fieldWithPath("data.accessToken").description("새로 발급된 Access Token"),
+                                fieldWithPath("data.refreshToken").description("새로 발급된 Refresh Token"),
+                                fieldWithPath("data.tokenType").description("토큰 타입"),
+                                fieldWithPath("data.accessTokenExpiresIn").description("Access Token 만료 시간(초)"),
+                                fieldWithPath("data.refreshTokenExpiresIn").description("Refresh Token 만료 시간(초)"),
+                                fieldWithPath("message").description("메시지").optional()
+                        )
+                ))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data.accessToken").isNotEmpty())
@@ -136,7 +164,19 @@ class AuthRestControllerTest {
         // then
         result.andDo(document("auth-refresh",
                         preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())))
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("refreshToken").description("발급받은 refresh token")
+                        ),
+                        responseFields(
+                                fieldWithPath("success").description("요청 성공 여부"),
+                                fieldWithPath("data.accessToken").description("새로 발급된 Access Token"),
+                                fieldWithPath("data.refreshToken").description("새로 발급된 Refresh Token"),
+                                fieldWithPath("data.tokenType").description("토큰 타입"),
+                                fieldWithPath("data.accessTokenExpiresIn").description("Access Token 만료 시간(초)"),
+                                fieldWithPath("data.refreshTokenExpiresIn").description("Refresh Token 만료 시간(초)"),
+                                fieldWithPath("message").description("메시지").optional()
+                        )))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data.accessToken").isNotEmpty())

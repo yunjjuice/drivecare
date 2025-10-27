@@ -27,6 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -82,7 +83,21 @@ class DrivingDataRestControllerTest {
                 .andDo(print())
                 .andDo(document("driving-save",
                         preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())))
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("driveScore").description("주행 점수"),
+                                fieldWithPath("accelCount").description("급가속 횟수"),
+                                fieldWithPath("brakeCount").description("급감속 횟수"),
+                                fieldWithPath("handleMissCount").description("핸들 조작 미숙 횟수"),
+                                fieldWithPath("id").ignored(),
+                                fieldWithPath("userInfo").ignored(),
+                                fieldWithPath("creDt").ignored()
+                        ),
+                        responseFields(
+                                fieldWithPath("success").description("요청 성공 여부"),
+                                fieldWithPath("data").description("메세지"),
+                                fieldWithPath("message").description("메세지").optional()
+                        )))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data").value("데이터 저장 완료"))
@@ -124,7 +139,21 @@ class DrivingDataRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(document("driving-list",
                         preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())))
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("success").description("요청 성공 여부"),
+                                fieldWithPath("data.recentScore").description("최근 주행 정보"),
+                                fieldWithPath("data.recentScore.driveScore").description("최근 주행 점수"),
+                                fieldWithPath("data.recentScore.accelCount").description("최근 급가속 횟수"),
+                                fieldWithPath("data.recentScore.brakeCount").description("최근 급감속 횟수"),
+                                fieldWithPath("data.recentScore.handleMissCount").description("최근 핸들 조작 미숙 횟수"),
+                                fieldWithPath("data.lastMonthScore").description("지난달 주행 정보"),
+                                fieldWithPath("data.lastMonthScore.driveScore").description("지난달 주행 점수"),
+                                fieldWithPath("data.lastMonthScore.accelCount").description("지난달 급가속 횟수"),
+                                fieldWithPath("data.lastMonthScore.brakeCount").description("지난달 급감속 횟수"),
+                                fieldWithPath("data.lastMonthScore.handleMissCount").description("지난달 핸들 조작 미숙 횟수"),
+                                fieldWithPath("message").description("메세지").optional()
+                        )))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true));
     }
