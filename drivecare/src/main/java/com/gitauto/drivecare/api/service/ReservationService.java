@@ -17,8 +17,8 @@ public class ReservationService {
 
     private final RepairReservationRepository repairReservationRepository;
 
-    public List<ReservationResponseDto> reservationList() {
-        List<RepairReservationEntity> repairReservation = repairReservationRepository.findAllByUserInfo_UserIdOrderByReserveDtDesc("test03");
+    public List<ReservationResponseDto> reservationList(String userId) {
+        List<RepairReservationEntity> repairReservation = repairReservationRepository.findAllByUserInfo_UserIdOrderByReserveDtDesc(userId);
 
         List<ReservationResponseDto> ReservationResponseList = repairReservation.stream()
                 .map(r -> new ReservationResponseDto(
