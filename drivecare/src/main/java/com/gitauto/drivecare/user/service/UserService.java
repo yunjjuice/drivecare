@@ -6,7 +6,6 @@ import com.gitauto.drivecare.database.user_info.entity.UserInfoEntity;
 import com.gitauto.drivecare.database.user_info.repository.UserInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,13 +14,12 @@ public class UserService {
 
     private final UserInfoRepository userInfoRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final PasswordEncoder passwordEncoder;
 
     public UserInfoEntity login(LoginRequestDto dto) {
         UserInfoEntity user = userInfoRepository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디입니다."));
 
-        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+        if (!bCryptPasswordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
 
@@ -44,7 +42,7 @@ public class UserService {
         }
 
         // 비밀번호 암호화
-        String encodedPassword = passwordEncoder.encode(dto.getPassword());
+        String encodedPassword = bCryptPasswordEncoder.encode(dto.getPassword());
 
         // 엔터티 생성
         UserInfoEntity user = UserInfoEntity.builder()
