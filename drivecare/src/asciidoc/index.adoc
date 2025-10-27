@@ -37,3 +37,13 @@ include::{snippets}/reservation/list/http-request.adoc[]
 === Response
 include::{snippets}/reservation/list/http-response.adoc[]
 include::{snippets}/reservation/list/response-fields.adoc[]
+
+== 운전 주행 정보 저장
+
+=== Request
+include::{snippets}/driving-save/http-request.adoc[]
+include::{snippets}/driving-save/request-body.adoc[]
+
+=== Response
+include::{snippets}/driving-save/http-response.adoc[]
+include::{snippets}/driving-save/response-body.adoc[]
