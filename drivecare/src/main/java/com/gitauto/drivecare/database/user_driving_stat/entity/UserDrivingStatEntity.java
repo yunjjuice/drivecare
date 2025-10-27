@@ -25,7 +25,7 @@ public class UserDrivingStatEntity {
     private UserInfoEntity userInfo;
 
     @Column(name = "DRIVE_SCORE")
-    private Long driveScore;
+    private Double driveScore;
 
     @Column(name = "ACCEL_COUNT")
     private Integer accelCount;

@@ -54,3 +54,12 @@ include::{snippets}/driving-save/request-body.adoc[]
 === Response
 include::{snippets}/driving-save/http-response.adoc[]
 include::{snippets}/driving-save/response-body.adoc[]
+
+== 운전 점수 조회
+
+=== Request
+include::{snippets}/driving-list/http-request.adoc[]
+
+=== Response
+include::{snippets}/driving-list/http-response.adoc[]
+include::{snippets}/driving-list/response-body.adoc[]

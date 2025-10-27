@@ -1,6 +1,7 @@
 package com.gitauto.drivecare.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gitauto.drivecare.api.dto.DrivingResponseDto;
 import com.gitauto.drivecare.api.service.DrivingDataService;
 import com.gitauto.drivecare.config.SecurityConfig;
 import com.gitauto.drivecare.database.user_driving_stat.entity.UserDrivingStatEntity;
@@ -62,7 +63,7 @@ class DrivingDataRestControllerTest {
         String userId = "testuser";
 
         UserDrivingStatEntity drivingData = UserDrivingStatEntity.builder()
-                .driveScore(95L)
+                .driveScore(95D)
                 .accelCount(2)
                 .brakeCount(3)
                 .handleMissCount(1)
@@ -86,6 +87,46 @@ class DrivingDataRestControllerTest {
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data").value("데이터 저장 완료"))
                 .andExpect(jsonPath("$.message").doesNotExist());
+    }
+
+    @Test
+    @DisplayName("운전 데이터 리스트 API 성공 테스트")
+    void getDrivingData_success() throws Exception {
+        // given
+        String token = "Bearer test-token";
+        String userId = "testuser";
+
+        DrivingResponseDto.DrivingScoreDto recentDto = DrivingResponseDto.DrivingScoreDto.builder()
+                .driveScore(80D)
+                .accelCount(2D)
+                .brakeCount(3D)
+                .handleMissCount(1D)
+                .build();
+
+        DrivingResponseDto.DrivingScoreDto lastMonthDto = DrivingResponseDto.DrivingScoreDto.builder()
+                .driveScore(88.5)
+                .accelCount(2.5)
+                .brakeCount(1D)
+                .handleMissCount(2D)
+                .build();
+
+        DrivingResponseDto drivingResult = DrivingResponseDto.builder()
+                .recentScore(recentDto)
+                .lastMonthScore(lastMonthDto)
+                .build();
+
+        Mockito.when(jwtTokenProvider.getSubject(any())).thenReturn(userId);
+        Mockito.when(drivingDataService.getDrivingData(eq(userId))).thenReturn(drivingResult);
+
+        // when & then
+        mockMvc.perform(post("/api/driving/list")
+                        .header(HttpHeaders.AUTHORIZATION, token)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(document("driving-list",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true));
     }
 }
 
