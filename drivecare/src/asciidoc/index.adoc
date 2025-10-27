@@ -12,6 +12,24 @@ include::{snippets}/test-doc/request-fields.adoc[]
 include::{snippets}/test-doc/http-response.adoc[]
 include::{snippets}/test-doc/response-fields.adoc[]
 
+== 로그인 API
+
+=== Request
+include::{snippets}/auth-login/http-request.adoc[]
+include::{snippets}/auth-login/request-body.adoc[]
+=== Response
+include::{snippets}/auth-login/http-response.adoc[]
+include::{snippets}/auth-login/response-body.adoc[]
+
+== 리프레시 토큰 API
+
+=== Request
+include::{snippets}/auth-refresh/http-request.adoc[]
+include::{snippets}/auth-refresh/request-body.adoc[]
+=== Response
+include::{snippets}/auth-refresh/http-response.adoc[]
+include::{snippets}/auth-refresh/response-body.adoc[]
+
 == 정비 리스트 조회
 
 === Request
@@ -19,3 +37,13 @@ include::{snippets}/reservation/list/http-request.adoc[]
 === Response
 include::{snippets}/reservation/list/http-response.adoc[]
 include::{snippets}/reservation/list/response-fields.adoc[]
+
+== 운전 주행 정보 저장
+
+=== Request
+include::{snippets}/driving-save/http-request.adoc[]
+include::{snippets}/driving-save/request-body.adoc[]
+
+=== Response
+include::{snippets}/driving-save/http-response.adoc[]
+include::{snippets}/driving-save/response-body.adoc[]
