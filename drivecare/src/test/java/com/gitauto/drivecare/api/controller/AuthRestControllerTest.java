@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.boot.test.autoconfigure.restdocs.RestDocsMockMvcBuilderCustomizer;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,6 +25,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.eq;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -45,6 +48,8 @@ class AuthRestControllerTest {
 
     @MockitoBean
     private AuthService authService;
+    @Autowired
+    private RestDocsMockMvcBuilderCustomizer restDocsMockMvcBuilderCustomizer;
 
     @Test
     @DisplayName("로그인 API 정상 동작")
@@ -72,7 +77,10 @@ class AuthRestControllerTest {
         System.out.println(result.andReturn().getResponse().getContentAsString());
 
         // then
-        result.andExpect(status().isOk())
+        result.andDo(document("auth-login",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data.accessToken").isNotEmpty())
                 .andExpect(jsonPath("$.data.refreshToken").isNotEmpty());
@@ -126,7 +134,10 @@ class AuthRestControllerTest {
         System.out.println(result.andReturn().getResponse().getContentAsString());
 
         // then
-        result.andExpect(status().isOk())
+        result.andDo(document("auth-refresh",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint())))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data.accessToken").isNotEmpty())
                 .andExpect(jsonPath("$.data.refreshToken").isNotEmpty());

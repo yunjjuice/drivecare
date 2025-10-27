@@ -49,7 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 String userId = parsed.getPayload().getSubject();
 
-                Optional<UserInfoEntity> userInfo = userInfoRepository.findById(Long.parseLong(userId));
+                Optional<UserInfoEntity> userInfo = userInfoRepository.findByUserId(userId);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userId,
                         null,
