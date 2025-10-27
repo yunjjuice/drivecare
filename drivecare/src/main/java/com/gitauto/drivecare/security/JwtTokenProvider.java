@@ -37,7 +37,7 @@ public class JwtTokenProvider {
                 .subject(subject)
                 .claims(claims)
                 .issuedAt(new Date(now))
-                .expiration(new Date(now + accessTokenExpirationSeconds))
+                .expiration(new Date(now + accessTokenExpirationSeconds * 1000L))
                 .signWith(key(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -48,7 +48,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .subject(subject)
                 .issuedAt(new Date(now))
-                .expiration(new Date(now + refreshTokenExpirationSeconds))
+                .expiration(new Date(now + refreshTokenExpirationSeconds * 1000L))
                 .signWith(key(), SignatureAlgorithm.HS256)
                 .compact();
     }
