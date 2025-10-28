@@ -7,19 +7,19 @@
 
 === Request
 include::{snippets}/auth-login/http-request.adoc[]
-include::{snippets}/auth-login/request-body.adoc[]
+include::{snippets}/auth-login/request-fields.adoc[]
 === Response
 include::{snippets}/auth-login/http-response.adoc[]
-include::{snippets}/auth-login/response-body.adoc[]
+include::{snippets}/auth-login/response-fields.adoc[]
 
 == 리프레시 토큰 API
 
 === Request
 include::{snippets}/auth-refresh/http-request.adoc[]
-include::{snippets}/auth-refresh/request-body.adoc[]
+include::{snippets}/auth-refresh/request-fields.adoc[]
 === Response
 include::{snippets}/auth-refresh/http-response.adoc[]
-include::{snippets}/auth-refresh/response-body.adoc[]
+include::{snippets}/auth-refresh/response-fields.adoc[]
 
 == 정비 리스트 조회
 
@@ -49,8 +49,17 @@ include::{snippets}/vehicle-health/detail/response-fields.adoc[]
 
 === Request
 include::{snippets}/driving-save/http-request.adoc[]
-include::{snippets}/driving-save/request-body.adoc[]
+include::{snippets}/driving-save/request-fields.adoc[]
 
 === Response
 include::{snippets}/driving-save/http-response.adoc[]
-include::{snippets}/driving-save/response-body.adoc[]
+include::{snippets}/driving-save/response-fields.adoc[]
+
+== 운전 점수 조회
+
+=== Request
+include::{snippets}/driving-list/http-request.adoc[]
+
+=== Response
+include::{snippets}/driving-list/http-response.adoc[]
+include::{snippets}/driving-list/response-fields.adoc[]
