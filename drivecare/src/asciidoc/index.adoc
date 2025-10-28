@@ -3,15 +3,6 @@
 :toclevels: 2
 :sectnums:
 
-== 테스트 문서
-
-=== Request
-include::{snippets}/test-doc/http-request.adoc[]
-include::{snippets}/test-doc/request-fields.adoc[]
-=== Response
-include::{snippets}/test-doc/http-response.adoc[]
-include::{snippets}/test-doc/response-fields.adoc[]
-
 == 로그인 API
 
 === Request
@@ -37,6 +28,22 @@ include::{snippets}/reservation/list/http-request.adoc[]
 === Response
 include::{snippets}/reservation/list/http-response.adoc[]
 include::{snippets}/reservation/list/response-fields.adoc[]
+
+== 건강 진단 저장 API
+
+=== Request
+include::{snippets}/vehicle-health/save/http-request.adoc[]
+include::{snippets}/vehicle-health/save/request-fields.adoc[]
+=== Response
+include::{snippets}/vehicle-health/save/http-response.adoc[]
+
+== 건강 진단 조회 API
+
+=== Request
+include::{snippets}/vehicle-health/detail/http-request.adoc[]
+=== Response
+include::{snippets}/vehicle-health/detail/http-response.adoc[]
+include::{snippets}/vehicle-health/detail/response-fields.adoc[]
 
 == 운전 주행 정보 저장
 

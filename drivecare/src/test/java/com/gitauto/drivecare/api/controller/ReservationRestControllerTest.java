@@ -5,6 +5,7 @@ import com.gitauto.drivecare.api.dto.ReservationResponseDto;
 import com.gitauto.drivecare.api.service.ReservationService;
 import com.gitauto.drivecare.config.SecurityConfig;
 import com.gitauto.drivecare.security.JwtAuthenticationFilter;
+import com.gitauto.drivecare.security.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -46,17 +50,25 @@ class ReservationRestControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockitoBean
-    private ReservationService reservationService;
-
     @Autowired
     private ObjectMapper objectMapper;
 
+    @MockitoBean
+    private ReservationService reservationService;
+
+    @MockitoBean
+    private JwtTokenProvider jwtTokenProvider;
+
+    private String token;
+    private String userId;
     private ReservationResponseDto reservation1;
     private List<ReservationResponseDto> reservationResponseDtoList;
 
     @BeforeEach
     void init() {
+        token = "Bearer test-token";
+        userId = "testuser";
+
         reservation1 = new ReservationResponseDto();
 
         reservation1.setId(1L);
@@ -76,35 +88,39 @@ class ReservationRestControllerTest {
 
     @Test
     void getReservationList() throws Exception {
-        given(reservationService.reservationList()).willReturn(reservationResponseDtoList);
+        given(jwtTokenProvider.getSubject(any())).willReturn(userId);
+        given(reservationService.reservationList(userId)).willReturn(reservationResponseDtoList);
 
         mockMvc.perform(get("/api/reservation/list")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .header(HttpHeaders.AUTHORIZATION, token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id").value(reservation1.getId()))
-                .andExpect(jsonPath("$[0].address").value(reservation1.getAddress()))
-                .andExpect(jsonPath("$[0].carCenterNm").value(reservation1.getCarCenterNm()))
-                .andExpect(jsonPath("$[0].telNo").value(reservation1.getTelNo()))
-                .andExpect(jsonPath("$[0].approveStatus").value(String.valueOf(reservation1.getApproveStatus())))
-                .andExpect(jsonPath("$[0].desc").value(reservation1.getDesc()))
-                .andExpect(jsonPath("$[0].carModel").value(reservation1.getCarModel()))
-                .andExpect(jsonPath("$[0].carNumber").value(reservation1.getCarNumber()))
-                .andExpect(jsonPath("$[0].repairDesc").isEmpty())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data.[0].id").value(reservation1.getId()))
+                .andExpect(jsonPath("$.data.[0].address").value(reservation1.getAddress()))
+                .andExpect(jsonPath("$.data.[0].carCenterNm").value(reservation1.getCarCenterNm()))
+                .andExpect(jsonPath("$.data.[0].telNo").value(reservation1.getTelNo()))
+                .andExpect(jsonPath("$.data.[0].approveStatus").value(String.valueOf(reservation1.getApproveStatus())))
+                .andExpect(jsonPath("$.data.[0].desc").value(reservation1.getDesc()))
+                .andExpect(jsonPath("$.data.[0].carModel").value(reservation1.getCarModel()))
+                .andExpect(jsonPath("$.data.[0].carNumber").value(reservation1.getCarNumber()))
+                .andExpect(jsonPath("$.data.[0].repairDesc").isEmpty())
+                .andExpect(jsonPath("$.message").isEmpty())
                 .andDo(document("reservation/list",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
-                                fieldWithPath("[].id").description("예약 ID"),
-                                fieldWithPath("[].address").description("정비소 주소"),
-                                fieldWithPath("[].reserveDt").description("예약 날짜 및 시간"),
-                                fieldWithPath("[].carCenterNm").description("정비소 이름"),
-                                fieldWithPath("[].telNo").description("정비소 전화번호"),
-                                fieldWithPath("[].approveStatus").description("예약 상태 (Y: 확정, P: 대기, N: 거절)"),
-                                fieldWithPath("[].desc").description("증상 설명"),
-                                fieldWithPath("[].carModel").description("차량 모델명"),
-                                fieldWithPath("[].carNumber").description("차량 번호"),
-                                fieldWithPath("[].repairDesc").description("정비 상세 내역").optional()
+                                fieldWithPath("success").description("성공 여부"),
+                                fieldWithPath("data[].id").description("예약 ID"),
+                                fieldWithPath("data[].address").description("정비소 주소"),
+                                fieldWithPath("data[].reserveDt").description("예약 날짜 및 시간"),
+                                fieldWithPath("data[].carCenterNm").description("정비소 이름"),
+                                fieldWithPath("data[].telNo").description("정비소 전화번호"),
+                                fieldWithPath("data[].approveStatus").description("예약 상태 (Y: 확정, P: 대기, N: 거절)"),
+                                fieldWithPath("data[].desc").description("증상 설명"),
+                                fieldWithPath("data[].carModel").description("차량 모델명"),
+                                fieldWithPath("data[].carNumber").description("차량 번호"),
+                                fieldWithPath("data[].repairDesc").description("정비 상세 내역").optional(),
+                                fieldWithPath("message").description("응답 메세지")
                         )
                 ));
     }
