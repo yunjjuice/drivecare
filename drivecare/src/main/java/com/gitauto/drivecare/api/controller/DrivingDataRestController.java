@@ -24,4 +24,12 @@ public class DrivingDataRestController {
 
         return ResponseEntity.ok(ApiResponse.ok(drivingDataService.saveDrivingData(userId, drivingData)));
     }
+
+    @PostMapping("/list")
+    public ResponseEntity<ApiResponse<?>> getDrivingData(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        String userId = jwtTokenProvider.getSubject(token);
+
+        return ResponseEntity.ok(ApiResponse.ok(drivingDataService.getDrivingData(userId)));
+    }
 }
