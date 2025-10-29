@@ -67,6 +67,7 @@ class AuthRestControllerTest {
         tokenResponseDto = TokenResponseDto.builder()
                 .accessToken("access-token")
                 .refreshToken("refresh-token")
+                .tokenType("Bearer")
                 .accessTokenExpiresIn(3600L)
                 .refreshTokenExpiresIn(86400L)
                 .build();
