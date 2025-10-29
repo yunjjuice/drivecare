@@ -2,17 +2,18 @@ package com.gitauto.drivecare.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gitauto.drivecare.api.dto.TokenResponseDto;
+import com.gitauto.drivecare.api.dto.UserCarInfoResponseDto;
 import com.gitauto.drivecare.api.service.AuthService;
 import com.gitauto.drivecare.config.SecurityConfig;
 import com.gitauto.drivecare.database.user_info.entity.UserInfoEntity;
 import com.gitauto.drivecare.security.JwtAuthenticationFilter;
 import com.jayway.jsonpath.JsonPath;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.restdocs.RestDocsMockMvcBuilderCustomizer;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
@@ -22,6 +23,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.eq;
@@ -49,26 +51,45 @@ class AuthRestControllerTest {
 
     @MockitoBean
     private AuthService authService;
-    @Autowired
-    private RestDocsMockMvcBuilderCustomizer restDocsMockMvcBuilderCustomizer;
+
+    private UserInfoEntity userInfo;
+    private TokenResponseDto tokenResponseDto;
+    private UserCarInfoResponseDto userCarInfoResponseDto;
+    private Map<String, Object> loginResult;
+
+    @BeforeEach
+    void init() {
+        userInfo = UserInfoEntity.builder()
+                .userId("test02")
+                .password("1234")
+                .build();
+
+        tokenResponseDto = TokenResponseDto.builder()
+                .accessToken("access-token")
+                .refreshToken("refresh-token")
+                .tokenType("Bearer")
+                .accessTokenExpiresIn(3600L)
+                .refreshTokenExpiresIn(86400L)
+                .build();
+
+        userCarInfoResponseDto = UserCarInfoResponseDto.builder()
+                .maker("현대")
+                .model("쏘나타")
+                .year("2020")
+                .engine("2.0L")
+                .carNumber("12가 3456")
+                .build();
+
+        loginResult = new HashMap<>();
+        loginResult.put("tokenInfo", tokenResponseDto);
+        loginResult.put("userCarInfo", userCarInfoResponseDto);
+    }
 
     @Test
     @DisplayName("로그인 API 정상 동작")
     void login_success() throws Exception {
         // given
-        UserInfoEntity userInfo = UserInfoEntity.builder()
-                .userId("test02")
-                .password("1234")
-                .build();
-
-        TokenResponseDto tokenResponse = TokenResponseDto.builder()
-                .accessToken("access-token")
-                .refreshToken("refresh-token")
-                .accessTokenExpiresIn(3600L)
-                .refreshTokenExpiresIn(86400L)
-                .build();
-
-        Mockito.when(authService.login(eq("test02"), eq("1234"))).thenReturn(tokenResponse);
+        Mockito.when(authService.login(eq("test02"), eq("1234"))).thenReturn(loginResult);
 
         // when
         ResultActions result = mockMvc.perform(post("/api/auth/login")
@@ -83,7 +104,7 @@ class AuthRestControllerTest {
                         preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("userId").description("사용자 ID"),
-                                fieldWithPath("password").ignored(),
+                                fieldWithPath("password").description("사용자 비밀번호").optional(),
                                 fieldWithPath("id").ignored(),
                                 fieldWithPath("name").ignored(),
                                 fieldWithPath("email").ignored(),
@@ -100,18 +121,25 @@ class AuthRestControllerTest {
                         ),
                         responseFields(
                                 fieldWithPath("success").description("요청 성공 여부"),
-                                fieldWithPath("data.accessToken").description("새로 발급된 Access Token"),
-                                fieldWithPath("data.refreshToken").description("새로 발급된 Refresh Token"),
-                                fieldWithPath("data.tokenType").description("토큰 타입"),
-                                fieldWithPath("data.accessTokenExpiresIn").description("Access Token 만료 시간(초)"),
-                                fieldWithPath("data.refreshTokenExpiresIn").description("Refresh Token 만료 시간(초)"),
+                                fieldWithPath("data.userCarInfo").description("사용자 자동차 정보"),
+                                fieldWithPath("data.userCarInfo.maker").description("자동차 메이커"),
+                                fieldWithPath("data.userCarInfo.model").description("자동차 모델 정보"),
+                                fieldWithPath("data.userCarInfo.year").description("자동차 연식 정보"),
+                                fieldWithPath("data.userCarInfo.engine").description("자동차 엔진 정보"),
+                                fieldWithPath("data.userCarInfo.carNumber").description("차량번호"),
+                                fieldWithPath("data.tokenInfo").description("토큰 정보"),
+                                fieldWithPath("data.tokenInfo.accessToken").description("새로 발급된 Access Token"),
+                                fieldWithPath("data.tokenInfo.refreshToken").description("새로 발급된 Refresh Token"),
+                                fieldWithPath("data.tokenInfo.tokenType").description("토큰 타입"),
+                                fieldWithPath("data.tokenInfo.accessTokenExpiresIn").description("Access Token 만료 시간(초)"),
+                                fieldWithPath("data.tokenInfo.refreshTokenExpiresIn").description("Refresh Token 만료 시간(초)"),
                                 fieldWithPath("message").description("메시지").optional()
                         )
                 ))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.accessToken").isNotEmpty())
-                .andExpect(jsonPath("$.data.refreshToken").isNotEmpty());
+                .andExpect(jsonPath("$.data.tokenInfo.accessToken").isNotEmpty())
+                .andExpect(jsonPath("$.data.tokenInfo.refreshToken").isNotEmpty());
     }
 
     @Test
@@ -119,13 +147,6 @@ class AuthRestControllerTest {
     void refresh_success() throws Exception {
         // given
         // 1. 로그인 시 반환될 토큰 정의
-        TokenResponseDto loginResponse = TokenResponseDto.builder()
-                .accessToken("access-token")
-                .refreshToken("refresh-token") // 로그인 후 받은 토큰
-                .accessTokenExpiresIn(3600L)
-                .refreshTokenExpiresIn(86400L)
-                .build();
-
         // 2. 리프레시 시 반환될 새 토큰 정의
         TokenResponseDto refreshedResponse = TokenResponseDto.builder()
                 .accessToken("new-access-token")
@@ -135,7 +156,7 @@ class AuthRestControllerTest {
                 .build();
 
         // 3. Mock 동작 정의
-        Mockito.when(authService.login(eq("test02"), eq("1234"))).thenReturn(loginResponse);
+        Mockito.when(authService.login(eq("test02"), eq("1234"))).thenReturn(loginResult);
         Mockito.when(authService.refresh(eq("refresh-token"))).thenReturn(refreshedResponse);
 
         // 4. 로그인 요청
@@ -149,7 +170,7 @@ class AuthRestControllerTest {
                 .content(objectMapper.writeValueAsString(userInfo)));
 
         String loginResponseJson = loginResult.andReturn().getResponse().getContentAsString();
-        String refreshToken = JsonPath.read(loginResponseJson, "$.data.refreshToken");
+        String refreshToken = JsonPath.read(loginResponseJson, "$.data.tokenInfo.refreshToken");
 
         // 5. refresh 요청 (로그인 결과 토큰 사용)
         Map<String, Object> request = Map.of("refreshToken", refreshToken);
@@ -176,7 +197,8 @@ class AuthRestControllerTest {
                                 fieldWithPath("data.accessTokenExpiresIn").description("Access Token 만료 시간(초)"),
                                 fieldWithPath("data.refreshTokenExpiresIn").description("Refresh Token 만료 시간(초)"),
                                 fieldWithPath("message").description("메시지").optional()
-                        )))
+                        )
+                ))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data.accessToken").isNotEmpty())
