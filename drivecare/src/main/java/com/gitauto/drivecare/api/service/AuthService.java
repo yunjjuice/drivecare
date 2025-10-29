@@ -1,8 +1,11 @@
 package com.gitauto.drivecare.api.service;
 
 import com.gitauto.drivecare.api.dto.TokenResponseDto;
+import com.gitauto.drivecare.api.dto.UserCarInfoResponseDto;
 import com.gitauto.drivecare.database.refresh_token.entity.RefreshTokenEntity;
 import com.gitauto.drivecare.database.refresh_token.repository.RefreshTokenRepository;
+import com.gitauto.drivecare.database.user_car_info.entity.UserCarInfoEntity;
+import com.gitauto.drivecare.database.user_car_info.repository.UserCarInfoRepository;
 import com.gitauto.drivecare.database.user_info.entity.UserInfoEntity;
 import com.gitauto.drivecare.database.user_info.repository.UserInfoRepository;
 import com.gitauto.drivecare.exception.ApiException;
@@ -12,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -19,10 +23,11 @@ import java.util.Map;
 public class AuthService {
 
     private final UserInfoRepository userInfoRepository;
+    private final UserCarInfoRepository userCarInfoRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public TokenResponseDto login(String userId, String password) {
+    public Map<String, Object> login(String userId, String password) {
         UserInfoEntity userInfo = userInfoRepository.findByUserId(userId)
                 .orElseThrow(() -> new ApiException(ErrorCode.INVALIE_USERID, ErrorCode.INVALIE_USERID.getDefaultMessage()));
 
@@ -41,12 +46,28 @@ public class AuthService {
                 .build();
         refreshTokenRepository.save(entity);
 
-        return TokenResponseDto.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .accessTokenExpiresIn(jwtTokenProvider.getAccessTokenExpirationSeconds())
-                .refreshTokenExpiresIn(jwtTokenProvider.getRefreshTokenExpirationSeconds())
-                .build();
+        Map<String, Object> res = new HashMap<>();
+        res.put("tokenInfo", TokenResponseDto.builder()
+                            .accessToken(accessToken)
+                            .refreshToken(refreshToken)
+                            .accessTokenExpiresIn(jwtTokenProvider.getAccessTokenExpirationSeconds())
+                            .refreshTokenExpiresIn(jwtTokenProvider.getRefreshTokenExpirationSeconds())
+                            .build()
+        );
+
+        UserCarInfoEntity userCarInfo = userCarInfoRepository.findAllByUserInfo_UserId(userId)
+                .orElse(new UserCarInfoEntity());
+
+        res.put("userCarInfo", UserCarInfoResponseDto.builder()
+                                    .maker(userCarInfo.getMaker())
+                                    .model(userCarInfo.getModel())
+                                    .year(userCarInfo.getYear())
+                                    .engine(userCarInfo.getEngine())
+                                    .carNumber(userCarInfo.getCarNumber())
+                                    .build()
+        );
+
+        return res;
     }
 
     public TokenResponseDto refresh(String refreshToken) {
