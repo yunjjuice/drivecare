@@ -1,96 +1,275 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/defaultLayout}">
-<th:block layout:fragment="scripts">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>회원가입 · Drivecare+ Admin</title>
+  <link rel="stylesheet" th:href="@{/css/dealer/dealer-style.css}">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <script th:src="@{/js/user/register.js}"></script>
-</th:block>
-<div layout:fragment="content">
-  <form th:action="@{/register}" th:object="${registerRequestDto}" method="post">
-    <div id="wrap">
-      <!-- Contents -->
-      <div id="contents">
-        <!-- Input -->
-        <div class="input_wrap">
-          <div class="top_box">
-            <span class="title">회원가입</span>
-          </div>
-          <table>
-            <tr>
-              <th><label>User ID</label></th>
-              <td>
-                <span class="tooltip_wrap">
-                  <input type="text" th:field="*{userId}" placeholder="User ID" />
-                  <div class="tooltip" th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}">필수 입력</div>
-                  <span id="idCheckResult"></span>
-                </span>
-              </td>
-              <td class="btn">
-                <button type="button" id="btnCheckId" th:data-check-url="@{/check-id}">Check</button>
-              </td>
-            </tr>
 
-            <tr>
-              <th><label>Password</label></th>
-              <td>
-                <span class="tooltip_wrap">
-                  <input type="text" th:field="*{password}" placeholder="Password" />
-                  <div class="tooltip" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">필수 입력</div>
-                </span>
-            </tr>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, #e9ecf1 0%, #dfe3eb 60%, #cfd5e0 100%);
+      font: 14px/1.5 system-ui, "Apple SD Gothic Neo", "Noto Sans KR", Segoe UI, Roboto, Arial;
+    }
 
-            <tr>
-              <th><label>Password Confirm</label></th>
-              <td>
+    .register-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100dvh;
+      padding: 40px 20px;
+    }
+
+    .register-box {
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      width: 640px;
+      padding: 40px 50px;
+      animation: fadeIn .4s ease;
+    }
+
+    .register-box .brand-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: radial-gradient(120% 120% at 20% 20%, #93c5fd, #60a5fa 60%, #2563eb 100%);
+      box-shadow: var(--shadow);
+      margin: 0 auto 14px;
+    }
+
+    .register-box h1 {
+      text-align: center;
+      font-size: 20px;
+      margin: 10px 0 25px 0;
+      color: var(--text);
+    }
+
+    table.register-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    table.register-table th {
+      width: 150px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--muted);
+      padding: 8px 10px;
+    }
+
+    table.register-table td {
+      padding: 8px 5px;
+    }
+
+    .tooltip_wrap {
+      display: block;
+      position: relative;
+    }
+
+    .tooltip {
+      color: var(--danger);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .register-table input,
+    .register-table select {
+      width: 100%;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: var(--text);
+      transition: border-color .15s, box-shadow .15s;
+    }
+
+    .register-table input:focus,
+    .register-table select:focus {
+      border-color: #93c5fd;
+      box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+      outline: none;
+    }
+
+    td.register-btn {
+      width: 100px;
+      text-align: center;
+    }
+
+    td.register-btn button {
+      border: 1px solid var(--border);
+      background: #f3f4f6;
+      color: var(--text);
+      padding: 9px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background .15s;
+    }
+
+    td.register-btn button:hover {
+      background: #e5e7eb;
+    }
+
+    .btn-bottom {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .btn-bottom button {
+      border: none;
+      border-radius: 12px;
+      padding: 10px 20px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: filter .15s;
+    }
+
+    .btn-bottom .cancel {
+      background: #f3f4f6;
+      color: var(--text);
+    }
+
+    .btn-bottom .cancel:hover {
+      filter: brightness(0.96);
+    }
+
+    .btn-bottom .submit {
+      background: var(--accent);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .btn-bottom .submit:hover {
+      filter: brightness(0.97);
+    }
+
+    .register-footer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 24px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 680px) {
+      .register-box {
+        width: 100%;
+        padding: 30px 24px;
+      }
+      table.register-table th {
+        width: 100px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<div class="register-container">
+  <div class="register-box">
+    <div class="brand-logo"></div>
+    <h1>회원가입</h1>
+
+    <form th:action="@{/register}" th:object="${registerRequestDto}" method="post">
+      <table class="register-table">
+        <tr>
+          <th><label>User ID</label></th>
+          <td>
               <span class="tooltip_wrap">
-                <input type="text" th:field="*{confirmPassword}" placeholder="Password" />
-                <div class="tooltip" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">필수 입력</div>
+                <input type="text" th:field="*{userId}" placeholder="User ID" />
+                <div class="tooltip" th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}"></div>
+                <span id="idCheckResult"></span>
               </span>
-            </tr>
+          </td>
+          <td class="register-btn">
+            <button type="button" id="btnCheckId" th:data-check-url="@{/check-id}">중복확인</button>
+          </td>
+        </tr>
 
-            <tr>
-              <th><label>이름</label></th>
-              <td><input type="text" th:field="*{name}" placeholder="사용자 이름" /></td>
-              <td></td>
-            </tr>
+        <tr>
+          <th><label>Password</label></th>
+          <td colspan="2">
+              <span class="tooltip_wrap">
+                <input type="password" th:field="*{password}" placeholder="Password" />
+                <div class="tooltip" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+              </span>
+          </td>
+        </tr>
 
-            <tr>
-              <th><label>Email</label></th>
-              <td>
-                <span class="tooltip_wrap">
-                  <input type="email" th:field="*{email}" placeholder="Email" />
-                  <div class="tooltip" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">필수 입력</div>
-                </span>
-              </td>
-              <td class="btn">
-                <button type="button" id="btnCheckEmail">Check</button>
-              </td>
-            </tr>
+        <tr>
+          <th><label>Password Confirm</label></th>
+          <td colspan="2">
+              <span class="tooltip_wrap">
+                <input type="password" th:field="*{confirmPassword}" placeholder="Password 확인" />
+                <div class="tooltip" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
+              </span>
+          </td>
+        </tr>
 
-            <tr>
-              <th><label >권한</label></th>
-              <td>
-                <select th:field="*{auth}">
-                  <option value="user">사용자</option>
-                  <option value="dealer">정비사</option>
-                  <option value="admin">관리자</option>
-                </select>
-              </td>
-              <td></td>
-            </tr>
-          </table>
-        </div>
-        <!-- //Input -->
+        <tr>
+          <th><label>이름</label></th>
+          <td colspan="2">
+            <input type="text" th:field="*{name}" placeholder="사용자 이름" />
+          </td>
+        </tr>
 
-        <!-- Bottom Buttons -->
-        <div class="btn_bottom">
-          <button type="button" class="bt_gray" th:onclick="|location.href='@{/login}'|">취소</button>
-          <button type="submit">회원가입</button>
-        </div>
+        <tr>
+          <th><label>Email</label></th>
+          <td>
+              <span class="tooltip_wrap">
+                <input type="email" th:field="*{email}" placeholder="Email" />
+                <div class="tooltip" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+              </span>
+          </td>
+          <td class="register-btn">
+            <button type="button" id="btnCheckEmail">중복확인</button>
+          </td>
+        </tr>
 
+        <tr>
+          <th><label>권한</label></th>
+          <td colspan="2">
+            <select th:field="*{auth}">
+              <option value="user">사용자</option>
+              <option value="dealer">정비사</option>
+              <option value="admin">관리자</option>
+            </select>
+          </td>
+        </tr>
+      </table>
+
+      <div class="btn-bottom">
+        <button type="button" class="cancel" th:onclick="|location.href='@{/login}'|">취소</button>
+        <button type="submit" class="submit">회원가입</button>
       </div>
-      <!-- //Contents -->
+    </form>
+
+    <div class="register-footer">
+      GIT Drivecare+ © 2025
     </div>
-  </form>
+  </div>
 </div>
+
+<script th:inline="javascript">
+  const successMsg = /*[[${successMessage}]]*/ null;
+  if (successMsg) {
+    Swal.fire({
+      icon: 'success',
+      title: '회원가입 완료',
+      text: successMsg,
+      confirmButtonColor: '#2563eb'
+    });
+  }
+</script>
+</body>
+</html>
