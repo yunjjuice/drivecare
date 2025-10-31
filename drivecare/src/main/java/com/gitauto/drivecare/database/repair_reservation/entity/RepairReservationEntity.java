@@ -57,4 +57,10 @@ public class RepairReservationEntity {
 
     @Column(name = "REPAIR_DESC")
     private String repairDesc;
+
+    @Column(name = "REVIEWED", columnDefinition = "BIT DEFAULT FALSE")
+    private boolean reviewed;
+
+    @Column(name = "REPAIR_STATUS", columnDefinition = "CHAR(1) DEFAULT 'N'")
+    private Character repairStatus;
 }

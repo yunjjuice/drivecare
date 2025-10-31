@@ -17,6 +17,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ReviewService {
 
     private final UserInfoRepository userInfoRepository;
@@ -46,6 +47,8 @@ public class ReviewService {
                         .rating(repairReview.getRating())
                         .reviewText(repairReview.getReviewText())
                         .build();
+                reservation.setReviewed(true);
+                repairReservationRepository.save(reservation);
             }
 
             repairReviewRepository.save(review);
