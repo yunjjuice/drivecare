@@ -23,4 +23,6 @@ public class ReservationResponseDto {
     private String carModel;
     private String carNumber;
     private String repairDesc;
+    private boolean reviewed;
+    private Character repairStatus;
 }

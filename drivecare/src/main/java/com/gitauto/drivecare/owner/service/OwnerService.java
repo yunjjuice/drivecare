@@ -65,7 +65,9 @@ public class OwnerService {
                 reservationDto.getDesc(),
                 reservationDto.getCarModel(),
                 reservationDto.getCarNumber(),
-                null
+                null,
+                false,
+                'N'
         );
 
         repairReservationRepository.save(repairReservation);
