@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface RepairReservationRepository extends JpaRepository<RepairReservationEntity, Long> {
     List<RepairReservationEntity> findByUserInfo_UserIdAndReserveDtAfterOrderByReserveDt(String userId, LocalDateTime now);
@@ -20,4 +21,6 @@ public interface RepairReservationRepository extends JpaRepository<RepairReserva
 
     @EntityGraph(attributePaths = {"userInfo"})
     List<RepairReservationEntity> findByCarCenter_Id(Long carCenterId);
+
+    Optional<RepairReservationEntity> findTop1ByIdOrderByCreDtDesc(Long id);
 }

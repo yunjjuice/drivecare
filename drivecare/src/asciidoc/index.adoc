@@ -63,3 +63,14 @@ include::{snippets}/driving-list/http-request.adoc[]
 === Response
 include::{snippets}/driving-list/http-response.adoc[]
 include::{snippets}/driving-list/response-fields.adoc[]
+
+
+== 정비 리뷰 저장
+
+=== Request
+include::{snippets}/review-save/http-request.adoc[]
+include::{snippets}/review-save/request-fields.adoc[]
+
+=== Response
+include::{snippets}/review-save/http-response.adoc[]
+include::{snippets}/review-save/response-fields.adoc[]

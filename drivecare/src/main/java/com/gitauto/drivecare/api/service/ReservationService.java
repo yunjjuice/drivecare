@@ -31,7 +31,9 @@ public class ReservationService {
                         r.getDesc(),
                         r.getCarModel(),
                         r.getCarNumber(),
-                        r.getRepairDesc()
+                        r.getRepairDesc(),
+                        r.isReviewed(),
+                        r.getRepairStatus()
                 ))
                 .collect(Collectors.toList());
 

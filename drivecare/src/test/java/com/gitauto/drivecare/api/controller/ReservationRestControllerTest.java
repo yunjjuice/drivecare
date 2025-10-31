@@ -81,6 +81,8 @@ class ReservationRestControllerTest {
         reservation1.setCarModel("현대 쏘나타 DN8");
         reservation1.setCarNumber("12가 3456");
         reservation1.setRepairDesc(null);
+        reservation1.setReviewed(false);
+        reservation1.setRepairStatus('N');
 
         reservationResponseDtoList = new ArrayList<>();
         reservationResponseDtoList.add(reservation1);
@@ -104,6 +106,8 @@ class ReservationRestControllerTest {
                 .andExpect(jsonPath("$.data.[0].carModel").value(reservation1.getCarModel()))
                 .andExpect(jsonPath("$.data.[0].carNumber").value(reservation1.getCarNumber()))
                 .andExpect(jsonPath("$.data.[0].repairDesc").isEmpty())
+                .andExpect(jsonPath("$.data.[0].reviewed").value(reservation1.isReviewed()))
+                .andExpect(jsonPath("$.data.[0].repairStatus").value(String.valueOf(reservation1.getRepairStatus())))
                 .andExpect(jsonPath("$.message").isEmpty())
                 .andDo(document("reservation/list",
                         preprocessRequest(prettyPrint()),
@@ -120,6 +124,8 @@ class ReservationRestControllerTest {
                                 fieldWithPath("data[].carModel").description("차량 모델명"),
                                 fieldWithPath("data[].carNumber").description("차량 번호"),
                                 fieldWithPath("data[].repairDesc").description("정비 상세 내역").optional(),
+                                fieldWithPath("data[].reviewed").description("리뷰 작성 여부"),
+                                fieldWithPath("data[].repairStatus").description("정비 완료 여부 (Y:정비완료, P:정비진행중, N:정비미진행)"),
                                 fieldWithPath("message").description("응답 메세지")
                         )
                 ));
