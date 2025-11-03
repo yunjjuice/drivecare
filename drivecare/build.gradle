@@ -51,6 +51,7 @@ dependencies {
 
 ext {
     set('snippetsDir', file("build/generated-snippets"))
+    set('docsDir', file("$buildDir/asciidoc"))
 }
 
 tasks.named('test') {
@@ -60,12 +61,22 @@ tasks.named('test') {
 
 tasks.named('asciidoctor') {
     dependsOn test
+    inputs.dir snippetsDir
+
     sourceDir = file("src/asciidoc")
-    outputDir = file("src/main/resources/static/asciidoc")
+    outputDir = docsDir
 
     configurations 'asciidoctorExtensions'
 }
 
-tasks.named('build') {
-    dependsOn asciidoctor
+//tasks.named('build') {
+//    dependsOn asciidoctor
+//}
+
+tasks.named('bootJar') {
+    dependsOn tasks.named('asciidoctor')
+
+    from(docsDir) {
+        into 'static/asciidoc'
+    }
 }

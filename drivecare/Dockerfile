@@ -12,7 +12,6 @@ RUN ./gradlew clean test asciidoctor bootJar --no-daemon
 FROM eclipse-temurin:21-jdk
 WORKDIR /app
 
-COPY --from=builder /app/src/main/resources/static/asciidoc /app/src/main/resources/static/asciidoc
 COPY --from=builder /app/build/libs/*.jar app.jar
 
 ENV TZ=Asia/Seoul
