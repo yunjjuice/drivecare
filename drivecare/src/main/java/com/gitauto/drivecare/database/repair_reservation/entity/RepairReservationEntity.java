@@ -46,7 +46,7 @@ public class RepairReservationEntity {
     @Column(name = "APPROVE_STATUS", columnDefinition = "CHAR(1) DEFAULT 'P'", nullable = false)
     private Character approveStatus;
 
-    @Column(name = "`DESC`")
+    @Column(name = "\"DESC\"")
     private String desc;
 
     @Column(name = "CAR_MODEL")
@@ -58,7 +58,7 @@ public class RepairReservationEntity {
     @Column(name = "REPAIR_DESC")
     private String repairDesc;
 
-    @Column(name = "REVIEWED", columnDefinition = "BIT DEFAULT FALSE")
+    @Column(name = "REVIEWED", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean reviewed;
 
     @Column(name = "REPAIR_STATUS", columnDefinition = "CHAR(1) DEFAULT 'N'")
