@@ -22,4 +22,6 @@ public class CarCenterResponseDto {
 
     private Double longitude;
 
+    private Double avgRating;
+
 }

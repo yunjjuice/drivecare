@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface UserCarInfoRepository extends JpaRepository<UserCarInfoEntity, Long> {
     Optional<UserCarInfoEntity> findAllByUserInfo_UserId(String userId);
+    Optional<UserCarInfoEntity> findTopByUserInfo_UserIdOrderByIdDesc(String userId);
 }

@@ -46,6 +46,13 @@ kakao.maps.load(function() {
                 ${shop.bizNo ? `<p><b>사업자번호:</b> ${shop.bizNo}</p>` : ''}
                 ${shop.desc ? `<p>${shop.desc}</p>` : ''}
                 <div class="pillset">${facilitiesHtml}</div>
+                <br>
+                <div id="rating-section">
+                  <div class="star-rating" id="star-rating">
+                    ${[1,2,3,4,5].map(()=>'<span class="star">★</span>').join('')}
+                  </div>
+                  <span class="rating-meta" id="rating-meta"></span>
+                </div>
             `;
         const reservationCard = document.getElementById('reservation-card');
         if (isRegistered) {
@@ -54,6 +61,31 @@ kakao.maps.load(function() {
             document.getElementById('car-center-id').value = shop.id || '';
         } else {
             reservationCard.style.display = 'none';
+        }
+        renderStars(shop.avgRating);
+    }
+
+    function renderStars(avg) {
+        const starWrap = document.getElementById('star-rating');
+        const meta = document.getElementById('rating-meta');
+        if (!starWrap) return;
+
+        starWrap.innerHTML = '';
+
+        // 0.5 단위 반올림
+        const roundedHalf = Math.round(avg * 2) / 2;
+        const full = Math.floor(roundedHalf);
+        const hasHalf = (roundedHalf - full) === 0.5;
+
+        for (let i = 1; i <= 5; i++) {
+            let cls = 'star';
+            if (i <= full) cls += ' full';
+            else if (i === full + 1 && hasHalf) cls += ' half';
+            starWrap.innerHTML += `<span class="${cls}">★</span>`;
+        }
+
+        if (meta) {
+            meta.textContent = ` ${avg.toFixed(1)} / 5.0`;
         }
     }
 
