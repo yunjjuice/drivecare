@@ -2,6 +2,13 @@ package com.gitauto.drivecare.owner.service;
 
 import com.gitauto.drivecare.database.car_center.entity.CarCenterEntity;
 import com.gitauto.drivecare.database.car_center.repository.CarCenterRepository;
+import com.gitauto.drivecare.database.repair_review.repository.RepairReviewRepository;
+import com.gitauto.drivecare.database.user_car_info.entity.UserCarInfoEntity;
+import com.gitauto.drivecare.database.user_car_info.repository.UserCarInfoRepository;
+import com.gitauto.drivecare.database.user_driving_stat.entity.UserDrivingStatEntity;
+import com.gitauto.drivecare.database.user_driving_stat.repository.UserDrivingStatRepository;
+import com.gitauto.drivecare.database.vehicle_health.entity.VehicleHealthEntity;
+import com.gitauto.drivecare.database.vehicle_health.repository.VehicleHealthRepository;
 import com.gitauto.drivecare.owner.dto.*;
 import com.gitauto.drivecare.owner.dto.ReservationDetailRequestDto;
 import com.gitauto.drivecare.owner.dto.ReservationDetailResponseDto;
@@ -22,6 +29,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,15 +40,30 @@ public class OwnerService {
     private final RepairReservationRepository repairReservationRepository;
     private final CarCenterRepository carCenterRepository;
     private final UserInfoRepository userInfoRepository;
+    private final UserCarInfoRepository userCarInfoRepository;
+    private final UserDrivingStatRepository userDrivingStatRepository;
+    private final VehicleHealthRepository vehicleHealthRepository;
+    private final RepairReviewRepository repairReviewRepository;
 
     public MainResponseDto repairMain(String userId) {
         // 자동차 정보
         // 운전데이터 (운전점수)
         userInfoRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
 
+        UserCarInfoEntity userCarInfo;
+        UserDrivingStatEntity userDrivingStat;
+        VehicleHealthEntity vehicleHealth;
+
+        Optional<UserCarInfoEntity> userCarInfoOpt = userCarInfoRepository.findTopByUserInfo_UserIdOrderByIdDesc(userId);
+        Optional<UserDrivingStatEntity> userDrivingStatOpt = userDrivingStatRepository.findTopByUserInfo_UserIdOrderByCreDtDesc(userId);
+        Optional<VehicleHealthEntity> vehicleHealthOpt = vehicleHealthRepository.findFirstByUserInfo_UserIdOrderByCreDtDesc(userId);
+
         List<RepairReservationEntity> reservationList = repairReservationRepository.findByUserInfo_UserIdAndReserveDtAfterOrderByReserveDt(userId, LocalDateTime.now());
 
         MainResponseDto mainResponseDto = MainResponseDto.builder()
+                .carInfo(userCarInfoOpt.map(r -> new MainResponseDto.CarInfoDto(r.getModel(), r.getCarNumber(), null)).orElse(null))
+                .carDetailInfo(vehicleHealthOpt.map(r -> new MainResponseDto.CarDetailInfoDto(50, 50, 0, r.getBatteryCharge())).orElse(null))
+                .driveScore(userDrivingStatOpt.map(r -> new MainResponseDto.DriveScoreDto(r.getDriveScore())).orElse(null))
                 .reservationList(reservationList.stream()
                         .map(r -> new MainResponseDto.ReservationDto(r.getId(), r.getReserveDt(), r.getCarCenter().getName(), r.getApproveStatus()))
                         .collect(Collectors.toList()))
@@ -52,6 +75,7 @@ public class OwnerService {
     public void reservation(String userId, ReservationRequestDto reservationDto) {
         CarCenterEntity carCenter = carCenterRepository.findById(reservationDto.getCarCenterId()).orElseThrow(() -> new RuntimeException("존재하지 않는 카센터입니다."));
         UserInfoEntity user = userInfoRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
+        UserCarInfoEntity userCarInfo = userCarInfoRepository.findTopByUserInfo_UserIdOrderByIdDesc(userId).orElseThrow(() -> new RuntimeException("차량이 등록되어 있지 않습니다."));
 
         RepairReservationEntity repairReservation = new RepairReservationEntity(
                 null,
@@ -63,8 +87,8 @@ public class OwnerService {
                 null,
                 'P',
                 reservationDto.getDesc(),
-                reservationDto.getCarModel(),
-                reservationDto.getCarNumber(),
+                userCarInfo.getModel(),
+                userCarInfo.getCarNumber(),
                 null,
                 false,
                 'N'
@@ -147,7 +171,8 @@ public class OwnerService {
                         r.getTelNo(),
                         r.getDesc(),
                         r.getLatitude(),
-                        r.getLongitude()
+                        r.getLongitude(),
+                        repairReviewRepository.findAvgRatingByCarCenterId(r.getId())
                 ))
                 .toList();
 

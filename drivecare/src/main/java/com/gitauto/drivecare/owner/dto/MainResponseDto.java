@@ -25,6 +25,7 @@ public class MainResponseDto {
     }
 
     @Data
+    @AllArgsConstructor
     public static class CarInfoDto {
         private String model;
         private String carNumber;
@@ -32,6 +33,7 @@ public class MainResponseDto {
     }
 
     @Data
+    @AllArgsConstructor
     public static class CarDetailInfoDto {
         private Integer brake;
         private Integer tire;
@@ -40,7 +42,8 @@ public class MainResponseDto {
     }
 
     @Data
+    @AllArgsConstructor
     public static class DriveScoreDto {
-        private Integer score;
+        private Double score;
     }
 }
