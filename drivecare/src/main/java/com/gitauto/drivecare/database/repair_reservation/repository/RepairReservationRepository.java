@@ -23,4 +23,10 @@ public interface RepairReservationRepository extends JpaRepository<RepairReserva
     List<RepairReservationEntity> findByCarCenter_Id(Long carCenterId);
 
     Optional<RepairReservationEntity> findTop1ByIdOrderByCreDtDesc(Long id);
+
+    Long countByCarCenterIdAndReserveDtBetween(Long carCenterId, LocalDateTime start, LocalDateTime end);
+
+    List<RepairReservationEntity> findByCarCenterIdAndRepairStatusInAndCreDtBefore(Long carCenterId, List<Character> repairStatuses, LocalDateTime beforeDt);
+
+    List<RepairReservationEntity> findByCarCenterIdAndReserveDtBetweenAndApproveStatus(Long carCenterId, LocalDateTime start, LocalDateTime end, Character approveStatus);
 }

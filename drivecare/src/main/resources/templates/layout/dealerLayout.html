@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <th:block layout:fragment="scripts"></th:block>
   <meta charset="UTF-8">
-  <title>GIT Drivecar+</title>
+  <title>GIT Drivecare+</title>
 </head>
 <body>
   <div class="app">
@@ -25,20 +25,20 @@
         </div>
       </div>
 
-      <div class="search">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-          <path d="M21 21l-4.3-4.3m1.3-4.7a7 7 0 11-14 0 7 7 0 0114 0z"
-                stroke="#6f7a90" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        <input placeholder="고객/예약/차량 검색…" />
-      </div>
+<!--      <div class="search">-->
+<!--        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">-->
+<!--          <path d="M21 21l-4.3-4.3m1.3-4.7a7 7 0 11-14 0 7 7 0 0114 0z"-->
+<!--                stroke="#6f7a90" stroke-width="2" stroke-linecap="round"/>-->
+<!--        </svg>-->
+<!--        <input placeholder="고객/예약/차량 검색…" />-->
+<!--      </div>-->
 
       <nav class="nav">
         <ul>
           <li>
             <a th:href="@{/dealer/dashboard}"
                th:classappend="${currentPath == '/dealer/dashboard'} ? 'active'">
-              🏠 대시보드 <span class="pill">새 3</span>
+              🏠 대시보드 <!--<span class="pill">새 3</span>-->
             </a>
           </li>
           <li>
