@@ -1,6 +1,7 @@
 package com.gitauto.drivecare.database.user_driving_stat.repository;
 
 import com.gitauto.drivecare.database.user_driving_stat.entity.UserDrivingStatEntity;
+import com.gitauto.drivecare.database.user_info.entity.UserInfoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
@@ -10,4 +11,5 @@ import java.util.Optional;
 public interface UserDrivingStatRepository extends JpaRepository<UserDrivingStatEntity, Long> {
     Optional<UserDrivingStatEntity> findTopByUserInfo_UserIdOrderByCreDtDesc(String userId);
     List<UserDrivingStatEntity> findAllByUserInfo_UserIdAndCreDtBetween(String userId, LocalDateTime start, LocalDateTime end);
+    List<UserDrivingStatEntity> findByUserInfoAndCreDtBetween(UserInfoEntity userInfo, LocalDateTime from, LocalDateTime to);
 }

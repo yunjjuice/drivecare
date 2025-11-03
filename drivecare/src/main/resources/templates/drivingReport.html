@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; color: #222; background:#f6f7fa;}
+    .report-card { max-width:650px; margin:auto; border-radius:16px; box-shadow:0 6px 16px #0001; background:#fff; padding:36px;}
+    h2 { font-size: 28px; font-weight: bold; margin-bottom: 12px;}
+    .desc { color:#176ecc; font-size:17px; margin-bottom:20px;}
+    .score-row {display:flex; gap:24px; margin-bottom:24px;}
+    .score-box {flex:1; padding:22px 18px 16px 18px; background:#f8f9fb; border-radius:12px;}
+    .score-title { font-size:20px; font-weight:700;}
+    .score-num {font-size:28px; font-weight:700; color:#176ecc; margin-top:9px;}
+    .score-bar-box { margin:14px 0 1px 0;}
+    .score-bar-bg { width:90%; height:14px; border-radius:7px;background:#d3dde5; }
+    .score-bar { height:14px; border-radius:7px; background:linear-gradient(90deg,#7ab5e0,#176ecc); position:relative; top:-14px; }
+    .score-desc { font-size:13px; color:#888; margin-bottom:2px;}
+    .avg-row { display:flex; gap:20px; margin-bottom:20px;}
+    .avg-box {flex:1; padding:22px 18px 16px 18px; background:#f8f9fb; border-radius:12px;}
+    .avg-title {font-size:17px; font-weight:700;}
+    .avg-num {font-size:23px; font-weight:700; color:#176ecc; margin-top:8px;}
+    .avg-bar-box { margin:10px 0 1px 0;}
+    .avg-bar-bg { width:70%; height:11px; border-radius:6px;background:#d3dde5; }
+    .avg-bar { height:11px; border-radius:6px; background:linear-gradient(90deg,#7ab5e0,#176ecc); position:relative; top:-11px; }
+    .avg-desc { font-size:13px; color:#888; margin-bottom:2px;}
+    .footer {margin-top:32px; font-size:15px; color:#999; text-align:center;}
+    /* 모바일 대응 */
+    @media(max-width:900px){ .report-card{padding:14px;} .score-row,.avg-row{flex-direction:column;gap:10px;} }
+  </style>
+</head>
+<body>
+<div class="report-card">
+  <h2 th:text="${period} + ' 운전자 리포트'">주간 운전자 리포트</h2>
+  <div class="desc" th:text="'안녕하세요, ' + ${userName} + '님! 운행에 대한 최근 리포트입니다.'">안녕하세요!</div>
+
+  <!-- 1. 주행점수 한 행 -->
+  <div class="score-row">
+    <div class="score-box">
+      <div class="score-title">평균 주행점수</div>
+      <div class="score-num" th:text="${driveScoreAvg == null ? '0.00' : driveScoreAvg}">0.00</div>
+      <div class="score-bar-box">
+        <div class="score-bar-bg"></div>
+        <div class="score-bar" th:style="'width:' + (${driveScoreAvg == null ? 0 : driveScoreAvg} * 2) + 'px;'"></div>
+      </div>
+      <div class="score-desc">점수가 높을수록 안전한 운전입니다.</div>
+    </div>
+  </div>
+
+  <!-- 2. 조작횟수 세 개 한 줄 -->
+  <div class="avg-row">
+    <div class="avg-box">
+      <div class="avg-title">가속 횟수</div>
+      <div class="avg-num" th:text="${accelCountSum == null ? 0 : accelCountSum}">0</div>
+      <div class="avg-bar-box">
+        <div class="avg-bar-bg"></div>
+        <div class="avg-bar" th:style="'width:' + (${accelCountSum == null ? 0 : accelCountSum} * 15) + 'px;'"></div>
+      </div>
+      <div class="avg-desc" th:text="'하루 평균: ' + (${accelCountAvg == null ? '0.00' : accelCountAvg})">하루 평균: 0.00</div>
+    </div>
+    <div class="avg-box">
+      <div class="avg-title">브레이크 횟수</div>
+      <div class="avg-num" th:text="${brakeCountSum == null ? 0 : brakeCountSum}">0</div>
+      <div class="avg-bar-box">
+        <div class="avg-bar-bg"></div>
+        <div class="avg-bar" th:style="'width:' + (${brakeCountSum == null ? 0 : brakeCountSum} * 15) + 'px;'"></div>
+      </div>
+      <div class="avg-desc" th:text="'하루 평균: ' + (${brakeCountAvg == null ? '0.00' : brakeCountAvg})">하루 평균: 0.00</div>
+    </div>
+    <div class="avg-box">
+      <div class="avg-title">핸들 미숙조작 횟수</div>
+      <div class="avg-num" th:text="${handleMissCountSum == null ? 0 : handleMissCountSum}">0</div>
+      <div class="avg-bar-box">
+        <div class="avg-bar-bg"></div>
+        <div class="avg-bar" th:style="'width:' + (${handleMissCountSum == null ? 0 : handleMissCountSum} * 20) + 'px;'"></div>
+      </div>
+      <div class="avg-desc" th:text="'하루 평균: ' + (${handleMissCountAvg == null ? '0.00' : handleMissCountAvg})">하루 평균: 0.00</div>
+    </div>
+  </div>
+
+  <!-- 3. 기간 안내 -->
+  <div class="footer">
+    안전운전 하셔서 감사합니다.<br>
+    <span th:text="${period} + ' 리포트 기준기간: ' + ${days} + '일'"></span><br>
+    <span th:text="${dateRange}"></span>
+  </div>
+</div>
+</body>
+</html>
