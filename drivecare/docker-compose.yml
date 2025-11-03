@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  drivecare:
+    build: .
+    container_name: drivecare
+    ports:
+      - "80:12432"       # 외부:내부(Spring Boot 포트)
+    #    env_file:
+    #      - .env             # RDS 등 환경변수
+    restart: unless-stopped
