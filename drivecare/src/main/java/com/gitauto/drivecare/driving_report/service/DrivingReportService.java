@@ -89,16 +89,19 @@ public class DrivingReportService {
     private void sendReportMail(UserDrivingStatReportDto dto) {
         Context context = new Context();
         context.setVariable("userName", dto.getUserName());
-        context.setVariable("driveScoreAvg", String.format("%.2f", dto.getDriveScoreAvg()));
+        context.setVariable("driveScoreAvg", dto.getDriveScoreAvg());
         context.setVariable("accelCountSum", dto.getAccelCountSum());
-        context.setVariable("accelCountAvg", String.format("%.2f", dto.getAccelCountAvg()));
+        context.setVariable("accelCountAvg", dto.getAccelCountAvg());
         context.setVariable("brakeCountSum", dto.getBrakeCountSum());
-        context.setVariable("brakeCountAvg", String.format("%.2f", dto.getBrakeCountAvg()));
+        context.setVariable("brakeCountAvg", dto.getBrakeCountAvg());
         context.setVariable("handleMissCountSum", dto.getHandleMissCountSum());
-        context.setVariable("handleMissCountAvg", String.format("%.2f", dto.getHandleMissCountAvg()));
+        context.setVariable("handleMissCountAvg", dto.getHandleMissCountAvg());
         context.setVariable("period", dto.getPeriod());
         context.setVariable("days", dto.getDays());
         context.setVariable("dateRange", dto.getDateRange());
+        context.setVariable("accelMax", 10.0);
+        context.setVariable("brakeMax", 10.0);
+        context.setVariable("handleMax", 10.0);
 
         String html = templateEngine.process("drivingReport.html", context);
 
