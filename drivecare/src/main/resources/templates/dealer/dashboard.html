@@ -59,8 +59,8 @@
                 th:if="${dashboard.reservationDifferent > 0}"
                 th:text="${dashboard.reservationDifferent} + '건 증가'"></span>
           <span class="badge danger"
-                th:unless="${dashboard.reservationDifferent > 0}"
-                th:text="${dashboard.reservationDifferent} + '건 감소'"></span>
+                th:if="${dashboard.reservationDifferent < 0}"
+                th:text="${dashboard.reservationDifferent * -1} + '건 감소'"></span>
           <span class="badge warn"
                 th:if="${dashboard.reservationDifferent == 0}"
                 th:text="'동일'"></span>
@@ -87,7 +87,7 @@
           <table>
             <thead>
               <tr>
-                <th>접수시간</th>
+                <th>정비 예약 시간</th>
                 <th>고객</th>
                 <th>차량</th>
                 <th>서비스</th>
@@ -96,7 +96,7 @@
             </thead>
             <tbody id="jobsBody">
               <tr th:each="item : ${dashboard.progressRepairs}">
-                <td th:text="${#temporals.format(item.creDt, 'MM월 dd일 a hh:mm')}"></td>
+                <td th:text="${#temporals.format(item.reserveDt, 'MM월 dd일 a hh:mm')}"></td>
                 <td th:text="${item.userInfo.name}"></td>
                 <td th:text="${item.carModel}"></td>
                 <td th:text="${item.desc}"></td>

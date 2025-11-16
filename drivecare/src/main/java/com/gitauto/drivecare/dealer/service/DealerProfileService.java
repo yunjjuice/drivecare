@@ -36,6 +36,7 @@ public class DealerProfileService {
         carCenter.setAddress(dto.getAddress());
         carCenter.setName(dto.getName());
         carCenter.setTelNo(dto.getTelNo());
+        carCenter.setEmail(dto.getEmail());
         carCenter.setDesc(dto.getDesc());
         carCenter.setLatitude(dto.getLatitude());
         carCenter.setLongitude(dto.getLongitude());
