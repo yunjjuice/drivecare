@@ -6,7 +6,7 @@
   <link rel="stylesheet" th:href="@{/css/dealer/dealer-style.css}">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-  <script th:src="@{/js/user/register.js}"></script>
+  <script defer th:src="@{/js/user/register.js}"></script>
 
   <style>
     body {
@@ -185,11 +185,11 @@
         <tr>
           <th><label>User ID</label></th>
           <td>
-              <span class="tooltip_wrap">
-                <input type="text" th:field="*{userId}" placeholder="User ID" />
-                <div class="tooltip" th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}"></div>
-                <span id="idCheckResult"></span>
-              </span>
+            <span class="tooltip_wrap">
+              <input type="text" th:field="*{userId}" placeholder="User ID" />
+              <div class="tooltip" th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}"></div>
+              <span id="idCheckResult"></span>
+            </span>
           </td>
           <td class="register-btn">
             <button type="button" id="btnCheckId" th:data-check-url="@{/check-id}">중복확인</button>
@@ -199,20 +199,20 @@
         <tr>
           <th><label>Password</label></th>
           <td colspan="2">
-              <span class="tooltip_wrap">
-                <input type="password" th:field="*{password}" placeholder="Password" />
-                <div class="tooltip" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
-              </span>
+            <span class="tooltip_wrap">
+              <input type="password" th:field="*{password}" placeholder="Password" />
+              <div class="tooltip" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+            </span>
           </td>
         </tr>
 
         <tr>
           <th><label>Password Confirm</label></th>
           <td colspan="2">
-              <span class="tooltip_wrap">
-                <input type="password" th:field="*{confirmPassword}" placeholder="Password 확인" />
-                <div class="tooltip" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
-              </span>
+            <span class="tooltip_wrap">
+              <input type="password" th:field="*{confirmPassword}" placeholder="Password 확인" />
+              <div class="tooltip" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
+            </span>
           </td>
         </tr>
 
@@ -220,19 +220,27 @@
           <th><label>이름</label></th>
           <td colspan="2">
             <input type="text" th:field="*{name}" placeholder="사용자 이름" />
+            <div class="tooltip" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
           </td>
         </tr>
 
         <tr>
           <th><label>Email</label></th>
-          <td>
-              <span class="tooltip_wrap">
-                <input type="email" th:field="*{email}" placeholder="Email" />
-                <div class="tooltip" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
-              </span>
+          <td colspan="2">
+            <span class="tooltip_wrap">
+              <input type="email" th:field="*{email}" placeholder="Email" />
+              <div class="tooltip" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+            </span>
           </td>
-          <td class="register-btn">
-            <button type="button" id="btnCheckEmail">중복확인</button>
+        </tr>
+
+        <tr>
+          <th><label for="telNo">전화번호</label></th>
+          <td colspan="2">
+        <span class="tooltip_wrap">
+          <input id="telNo" type="text" th:field="*{telNo}" placeholder="010-1234-5678"/>
+          <div class="tooltip" th:if="${#fields.hasErrors('telNo')}" th:errors="*{telNo}"></div>
+        </span>
           </td>
         </tr>
 
@@ -244,9 +252,63 @@
               <option value="dealer">정비사</option>
               <option value="admin">관리자</option>
             </select>
+            <div class="tooltip" th:if="${#fields.hasErrors('auth')}" th:errors="*{auth}"></div>
           </td>
         </tr>
       </table>
+
+      <!-- 차량정보 섹션: auth=USER 일 때만 표시 -->
+      <div id="carSection" style="display:none; margin-top:12px;">
+        <table class="register-table">
+          <tr>
+            <th><label for="carNumber">자동차번호</label></th>
+            <td colspan="2">
+          <span class="tooltip_wrap">
+            <input id="carNumber" type="text" th:field="*{carNumber}" placeholder="12가3456"/>
+            <div class="tooltip" th:if="${#fields.hasErrors('carNumber')}" th:errors="*{carNumber}"></div>
+          </span>
+            </td>
+          </tr>
+          <tr>
+            <th><label for="maker">자동차브랜드</label></th>
+            <td colspan="2">
+          <span class="tooltip_wrap">
+            <select id="maker" th:field="*{maker}">
+              <option value="">선택하세요</option>
+              <option value="현대">현대</option>
+              <option value="기아">기아</option>
+              <option value="제네시스">제네시스</option>
+              <!-- 필요 브랜드 추가 -->
+            </select>
+            <div class="tooltip" th:if="${#fields.hasErrors('maker')}" th:errors="*{maker}"></div>
+          </span>
+            </td>
+          </tr>
+          <tr>
+            <th><label for="model">자동차모델</label></th>
+            <td colspan="2">
+          <span class="tooltip_wrap">
+            <input id="model" type="text" th:field="*{model}" placeholder="예: 아반떼, 스포티지"/>
+            <div class="tooltip" th:if="${#fields.hasErrors('model')}" th:errors="*{model}"></div>
+          </span>
+            </td>
+          </tr>
+          <tr>
+            <th><label for="year">자동차연식</label></th>
+            <td colspan="2">
+          <span class="tooltip_wrap">
+            <select id="year" th:field="*{year}">
+              <option value="">선택하세요</option>
+              <!-- 최근 25년 예시 -->
+              <option th:each="y : ${#numbers.sequence(2020, 2026)}"
+                      th:value="${y}" th:text="${y}"></option>
+            </select>
+            <div class="tooltip" th:if="${#fields.hasErrors('year')}" th:errors="*{year}"></div>
+          </span>
+            </td>
+          </tr>
+        </table>
+      </div>
 
       <div class="btn-bottom">
         <button type="button" class="cancel" th:onclick="|location.href='@{/login}'|">취소</button>
@@ -260,16 +322,23 @@
   </div>
 </div>
 
+<!-- 성공 메시지 (플래시) -->
 <script th:inline="javascript">
   const successMsg = /*[[${successMessage}]]*/ null;
   if (successMsg) {
-    Swal.fire({
-      icon: 'success',
-      title: '회원가입 완료',
-      text: successMsg,
-      confirmButtonColor: '#2563eb'
-    });
+    Swal.fire({ icon: 'success', title: '회원가입 완료', text: successMsg, confirmButtonColor: '#2563eb' });
   }
+</script>
+<script defer th:inline="javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    const authSel = document.getElementById('auth');
+    const carSec  = document.getElementById('carSection');
+    const toggle = () => {
+      carSec.style.display = (authSel.value === 'user') ? 'block' : 'none';
+    };
+    toggle();
+    authSel.addEventListener('change', toggle);
+  });
 </script>
 </body>
 </html>

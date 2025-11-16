@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface UserInfoRepository extends JpaRepository<UserInfoEntity, Long> {
     Optional<UserInfoEntity> findByUserId(String userId);
     boolean existsByUserId(String userId);
+    boolean existsByEmail(String email);
 
     @Transactional
     @Modifying

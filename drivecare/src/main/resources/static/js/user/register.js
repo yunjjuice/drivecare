@@ -1,10 +1,10 @@
 (function () {
     const btn = document.getElementById("btnCheckId");
-    if (!btn) return; // 다른 페이지에서 불필요하게 실행 방지
+    if (!btn) return;
 
     const input = document.getElementById("userId");
     const result = document.getElementById("idCheckResult");
-    const checkUrl = btn.dataset.checkUrl; // HTML에서 내려준 API URL
+    const checkUrl = btn.dataset.checkUrl;
 
     btn.addEventListener("click", function () {
         const userId = (input.value || "").trim();

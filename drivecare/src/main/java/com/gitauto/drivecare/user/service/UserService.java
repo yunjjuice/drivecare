@@ -1,5 +1,7 @@
 package com.gitauto.drivecare.user.service;
 
+import com.gitauto.drivecare.database.user_car_info.entity.UserCarInfoEntity;
+import com.gitauto.drivecare.database.user_car_info.repository.UserCarInfoRepository;
 import com.gitauto.drivecare.user.dto.LoginRequestDto;
 import com.gitauto.drivecare.user.dto.RegisterRequestDto;
 import com.gitauto.drivecare.database.user_info.entity.UserInfoEntity;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserInfoRepository userInfoRepository;
+    private final UserCarInfoRepository userCarInfoRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public UserInfoEntity login(LoginRequestDto dto) {
@@ -30,17 +33,11 @@ public class UserService {
         return userInfoRepository.existsByUserId(userId);
     }
 
+    public boolean checkEmailDuplicate(String email) {
+        return userInfoRepository.existsByEmail(email);
+    }
+
     public void register(RegisterRequestDto dto) {
-        // id 중복체크
-        if (userInfoRepository.existsByUserId(dto.getUserId())) {
-            throw new IllegalStateException("이미 사용 중인 아이디입니다.");
-        }
-
-        // 비밀번호 확인
-        if (!dto.getPassword().equals(dto.getConfirmPassword())) {
-            throw new IllegalStateException("비밀번호와 확인이 일치하지 않습니다.");
-        }
-
         // 비밀번호 암호화
         String encodedPassword = bCryptPasswordEncoder.encode(dto.getPassword());
 
@@ -50,9 +47,21 @@ public class UserService {
                 .password(encodedPassword)
                 .email(dto.getEmail())
                 .name(dto.getName())
+                .telNo(dto.getTelNo())
                 .auth(dto.getAuth())
                 .build();
 
-        userInfoRepository.save(user);
+        UserInfoEntity saved = userInfoRepository.save(user);
+
+        if ("user".equalsIgnoreCase(dto.getAuth())) {
+            UserCarInfoEntity car = UserCarInfoEntity.builder()
+                    .userInfo(saved)
+                    .maker(dto.getMaker())
+                    .model(dto.getModel())
+                    .year(dto.getYear())
+                    .carNumber(dto.getCarNumber())
+                    .build();
+            userCarInfoRepository.save(car);
+        }
     }
 }
