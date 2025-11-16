@@ -49,6 +49,14 @@ public class UserController {
         }
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        // 세션 무효화 (모든 속성 제거)
+        session.invalidate();
+        // 로그아웃 후 로그인 페이지로 리다이렉트
+        return "redirect:/login";
+    }
+
     // 회원가입
     @GetMapping("/register")
     public String viewRegisterPage(RegisterRequestDto form,

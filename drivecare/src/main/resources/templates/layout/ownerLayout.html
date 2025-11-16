@@ -44,6 +44,16 @@
             </ul>
         </nav>
 
+        <div class="logout-area" style="margin-top:auto; padding:16px;">
+            <form th:action="@{/logout}" method="get">
+                <button type="submit" class="logout-btn"
+                        style="width:100%; border:none; background:#f3f4f6;
+                   color:#333; padding:10px 0; border-radius:8px; cursor:pointer;">
+                    🔒 로그아웃
+                </button>
+            </form>
+        </div>
+
         <div class="foot">v1.0 · 로컬 데모 UI</div>
     </aside>
 
